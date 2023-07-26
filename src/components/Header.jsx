@@ -18,19 +18,19 @@ const Header = () => {
     console.log(isModal);
   }, [isModal]);
 
-  const onRegisterClick = () => {
+  const handleOpenRegisterModal = () => {
     console.log("新規登録ボタンをクリックしました");
     setIsRegister(true);
     setIsModal(true);
   };
 
-  const onLoginClick = () => {
+  const handleOpenLoginModal = () => {
     console.log("ログインボタンをクリックしました");
     setIsLogin(true);
     setIsModal(true);
   };
 
-  const handleClose = () => {
+  const handleCloseModal = () => {
     console.log("モーダル閉じるボタンをクリックしました");
     setIsModal(false);
     setIsRegister(false);
@@ -54,10 +54,10 @@ const Header = () => {
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               TODOリスト
             </Typography>
-            <Button color="inherit" onClick={onRegisterClick}>
+            <Button color="inherit" onClick={handleOpenRegisterModal}>
               新規登録
             </Button>
-            <Button color="inherit" onClick={onLoginClick}>
+            <Button color="inherit" onClick={handleOpenLoginModal}>
               ログイン
             </Button>
           </Toolbar>
@@ -78,11 +78,12 @@ const Header = () => {
             maxWidth: "80vw",
           }}
         >
-          <ModalContent
-            isRegister={isRegister}
-            isLogin={isLogin}
-            onClose={handleClose}
-          />
+          {isRegister && (
+            <ModalContent title="新規登録" onClose={handleCloseModal} />
+          )}
+          {isLogin && (
+            <ModalContent title="ログイン" onClose={handleCloseModal} />
+          )}
         </Box>
       </Modal>
     </>
