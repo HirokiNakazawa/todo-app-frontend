@@ -68,12 +68,25 @@ const Header = () => {
       </Box>
 
       <Modal open={isModal}>
-        <ModalContent
-          isRegister={isRegister}
-          isLogin={isLogin}
-          title={title}
-          onClose={handleCloseModal}
-        />
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            bgcolor: "background.paper",
+            borderRadius: 4,
+            boxShadow: 24,
+            width: 500,
+          }}
+        >
+          <ModalContent
+            isRegister={isRegister}
+            isLogin={isLogin}
+            title={title}
+            onClose={handleCloseModal}
+          />
+        </Box>
       </Modal>
     </>
   );
