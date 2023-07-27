@@ -2,7 +2,7 @@ import { Box, Typography, Button, TextField } from "@mui/material";
 import { useState } from "react";
 
 const ModalContent = (props) => {
-  const { title, onClose } = props;
+  const { isRegister, isLogin, title, onClose } = props;
 
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
@@ -22,40 +22,64 @@ const ModalContent = (props) => {
 
   return (
     <>
-      <form onSubmit={handleSubmit}>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 20,
-            maxWidth: 400,
-            m: "auto",
-          }}
-        >
-          <Typography variant="h5">{title}</Typography>
-          <TextField
-            label="名前"
-            name="name"
-            value={name}
-            onChange={handleNameChange}
-            required
-          />
-          <TextField
-            label="パスワード"
-            name="password"
-            type="password"
-            value={password}
-            onChange={handlePasswordChange}
-            required
-          />
-          <Button type="submit" variant="contained" color="primary">
-            {title}
-          </Button>
-        </Box>
-      </form>
-      <Button onClick={onClose} variant="contained" mt={3}>
-        閉じる
-      </Button>
+      <Box
+        sx={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          bgcolor: "background.paper",
+          borderRadius: 4,
+          boxShadow: 24,
+          width: 500,
+        }}
+      >
+        <form onSubmit={handleSubmit}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column", // 横方向に配置
+              p: 2,
+              gap: 2,
+            }}
+          >
+            <Box sx={{ mb: 2, borderBottom: "1px solid gray" }}>
+              <Typography variant="h4">{title}</Typography>
+            </Box>
+            <TextField
+              label="名前"
+              name="name"
+              value={name}
+              onChange={handleNameChange}
+              required
+            />
+            <TextField
+              label="パスワード"
+              name="password"
+              type="password"
+              value={password}
+              onChange={handlePasswordChange}
+              required
+            />
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "flex-end",
+              p: 2,
+              gap: 2,
+            }}
+          >
+            <Button type="submit" variant="contained" color="primary">
+              {title}
+            </Button>
+            <Button onClick={onClose} variant="contained" mt={3}>
+              閉じる
+            </Button>
+          </Box>
+        </form>
+      </Box>
     </>
   );
 };

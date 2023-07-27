@@ -12,6 +12,7 @@ import ModalContent from "./ModalContent";
 const Header = () => {
   const [isRegister, setIsRegister] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
+  const [title, setTitle] = useState("");
   const [isModal, setIsModal] = useState(false);
 
   useEffect(() => {
@@ -20,12 +21,14 @@ const Header = () => {
 
   const handleOpenRegisterModal = () => {
     console.log("新規登録ボタンをクリックしました");
+    setTitle("新規登録");
     setIsRegister(true);
     setIsModal(true);
   };
 
   const handleOpenLoginModal = () => {
     console.log("ログインボタンをクリックしました");
+    setTitle("ログイン");
     setIsLogin(true);
     setIsModal(true);
   };
@@ -65,26 +68,12 @@ const Header = () => {
       </Box>
 
       <Modal open={isModal}>
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            bgcolor: "background.paper",
-            boxShadow: 24,
-            p: 4,
-            minWidth: 300,
-            maxWidth: "80vw",
-          }}
-        >
-          {isRegister && (
-            <ModalContent title="新規登録" onClose={handleCloseModal} />
-          )}
-          {isLogin && (
-            <ModalContent title="ログイン" onClose={handleCloseModal} />
-          )}
-        </Box>
+        <ModalContent
+          isRegister={isRegister}
+          isLogin={isLogin}
+          title={title}
+          onClose={handleCloseModal}
+        />
       </Modal>
     </>
   );
