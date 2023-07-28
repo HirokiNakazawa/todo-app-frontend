@@ -1,9 +1,12 @@
 import { Box, Typography, Button, TextField } from "@mui/material";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import AuthContext from "../context/AuthContext";
 import axios from "axios";
 
 const ModalContent = (props) => {
   const { isRegister, isLogin, title, onClose } = props;
+
+  const { setUserId, setUserName, setIsLoggedIn } = useContext(AuthContext);
 
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
@@ -23,22 +26,16 @@ const ModalContent = (props) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("登録 or ログインボタンがクリックされました");
-
     // 新規登録の場合
     if (isRegister) {
-      if (postRegister()) {
-        console.log("register complete");
-        onClose();
-      }
+      console.log("登録ボタンがクリックされました");
+      postRegister();
     }
 
     // ログインの場合
     if (isLogin) {
-      if (postLogin()) {
-        console.log("Success Login!");
-        onClose();
-      }
+      console.log("ログインボタンがクリックされました");
+      postLogin();
     }
   };
 
@@ -50,12 +47,15 @@ const ModalContent = (props) => {
       const response = await axios.post(url, data);
 
       console.log(response.data);
-      return response.data;
+
+      setUserId(response.data.id);
+      setUserName(response.data.name);
+      setIsLoggedIn(true);
+      onClose();
     } catch (error) {
       console.error(error);
       setErrorMessage("ユーザー登録に失敗しました");
     }
-    return false;
   };
 
   const postLogin = async () => {
@@ -66,12 +66,15 @@ const ModalContent = (props) => {
       const response = await axios.post(url, data);
 
       console.log(response);
-      return response.data;
+
+      setUserId(response.data.id);
+      setUserName(response.data.name);
+      setIsLoggedIn(true);
+      onClose();
     } catch (error) {
       console.log(error);
       setErrorMessage("ログインに失敗しました");
     }
-    return false;
   };
 
   const getAuthData = () => {

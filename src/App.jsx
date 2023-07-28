@@ -1,12 +1,14 @@
 import Header from "./components/Header";
+import Body from "./components/Body";
+import AuthProvider from "./provider/AuthProvider";
 
 const App = () => {
   return (
     <>
-      <Header></Header>
-      <div className="App">
-        <h1>未ログイン</h1>
-      </div>
+      <AuthProvider>
+        <Header />
+        <Body />
+      </AuthProvider>
     </>
   );
 };

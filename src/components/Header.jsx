@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import Box from "@mui/material/Box";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
@@ -8,12 +8,15 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
 import ModalContent from "./ModalContent";
+import AuthContext from "../context/AuthContext";
 
 const Header = () => {
   const [isRegister, setIsRegister] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
   const [title, setTitle] = useState("");
   const [isModal, setIsModal] = useState(false);
+
+  const { userName, isLoggedIn } = useContext(AuthContext);
 
   useEffect(() => {
     console.log(isModal);
@@ -34,7 +37,7 @@ const Header = () => {
   };
 
   const handleCloseModal = () => {
-    console.log("モーダル閉じるボタンをクリックしました");
+    console.log("モーダルを閉じます");
     setIsModal(false);
     setIsRegister(false);
     setIsLogin(false);
@@ -57,12 +60,19 @@ const Header = () => {
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               TODOリスト
             </Typography>
-            <Button color="inherit" onClick={handleOpenRegisterModal}>
-              新規登録
-            </Button>
-            <Button color="inherit" onClick={handleOpenLoginModal}>
-              ログイン
-            </Button>
+
+            {isLoggedIn ? (
+              <Typography>{userName}ログイン中</Typography>
+            ) : (
+              <div>
+                <Button color="inherit" onClick={handleOpenRegisterModal}>
+                  新規登録
+                </Button>
+                <Button color="inherit" onClick={handleOpenLoginModal}>
+                  ログイン
+                </Button>
+              </div>
+            )}
           </Toolbar>
         </AppBar>
       </Box>
