@@ -1,5 +1,5 @@
 import { Box, Typography, Button, TextField } from "@mui/material";
-import { useState, useEffect, useContext } from "react";
+import { useState, useContext } from "react";
 import AuthContext from "../context/AuthContext";
 import axios from "axios";
 
@@ -11,10 +11,6 @@ const ModalContent = (props) => {
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-
-  useEffect(() => {
-    console.log(errorMessage);
-  }, [errorMessage]);
 
   const handleNameChange = (e) => {
     setName(e.target.value);
@@ -91,7 +87,7 @@ const ModalContent = (props) => {
         <Box
           sx={{
             display: "flex",
-            flexDirection: "column", // 横方向に配置
+            flexDirection: "column",
             p: 2,
             gap: 2,
           }}

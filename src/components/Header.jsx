@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useContext } from "react";
 import Box from "@mui/material/Box";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
@@ -17,10 +17,6 @@ const Header = () => {
   const [isModal, setIsModal] = useState(false);
 
   const { userName, isLoggedIn } = useContext(AuthContext);
-
-  useEffect(() => {
-    console.log(isModal);
-  }, [isModal]);
 
   const handleOpenRegisterModal = () => {
     console.log("新規登録ボタンをクリックしました");
@@ -45,37 +41,38 @@ const Header = () => {
 
   return (
     <>
-      <Box sx={{ flexGrow: 1 }}>
-        <AppBar position="static">
-          <Toolbar>
-            <IconButton
-              size="large"
-              edge="start"
-              color="inherit"
-              aria-label="menu"
-              sx={{ mr: 2 }}
-            >
-              <MenuIcon />
-            </IconButton>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              TODOリスト
-            </Typography>
+      <AppBar
+        position="fixed"
+        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+      >
+        <Toolbar>
+          <IconButton
+            size="large"
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+            sx={{ mr: 2 }}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            TODOリスト
+          </Typography>
 
-            {isLoggedIn ? (
-              <Typography>{userName}ログイン中</Typography>
-            ) : (
-              <div>
-                <Button color="inherit" onClick={handleOpenRegisterModal}>
-                  新規登録
-                </Button>
-                <Button color="inherit" onClick={handleOpenLoginModal}>
-                  ログイン
-                </Button>
-              </div>
-            )}
-          </Toolbar>
-        </AppBar>
-      </Box>
+          {isLoggedIn ? (
+            <Typography>{userName}ログイン中</Typography>
+          ) : (
+            <div>
+              <Button color="inherit" onClick={handleOpenRegisterModal}>
+                新規登録
+              </Button>
+              <Button color="inherit" onClick={handleOpenLoginModal}>
+                ログイン
+              </Button>
+            </div>
+          )}
+        </Toolbar>
+      </AppBar>
 
       <Modal open={isModal}>
         <Box
