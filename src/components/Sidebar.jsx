@@ -25,7 +25,6 @@ const Sidebar = () => {
 
   useEffect(() => {
     if (isLoggedIn && !hasLoggedIn) {
-      console.log("初めてログイン状態になりました");
       getCategories(userId);
       setHasLoggedIn(true);
     }
@@ -108,20 +107,23 @@ const Sidebar = () => {
                   </Button>
                 </Box>
               </form>
+              <ListItem>
+                <ListItemText primary="カテゴリ一覧" />
+              </ListItem>
               <ListItem disablePadding>
                 <ListItemButton>
-                  <ListItemText primary="全て" />
+                  <ListItemText secondary="全て" />
                 </ListItemButton>
               </ListItem>
+              {categories.map((item) => (
+                <ListItem key={item.id} disablePadding>
+                  <ListItemButton>
+                    <ListItemText secondary={item.category} />
+                  </ListItemButton>
+                </ListItem>
+              ))}
             </div>
           ) : null}
-          {categories.map((item) => (
-            <ListItem key={item.id} disablePadding>
-              <ListItemButton>
-                <ListItemText primary={item.category} />
-              </ListItemButton>
-            </ListItem>
-          ))}
         </List>
       </Box>
     </Drawer>
