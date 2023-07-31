@@ -8,6 +8,10 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
+import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { ja } from "date-fns/locale";
+import dayjs from "dayjs";
 import { useState, useContext } from "react";
 import AuthContext from "../context/AuthContext";
 import axios from "axios";
@@ -30,6 +34,7 @@ const ModalContent = (props) => {
   const [password, setPassword] = useState("");
   const [category, setCategory] = useState("");
   const [todo, setTodo] = useState("");
+  const [limitDate, setLimitDate] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleNameChange = (e) => {
@@ -46,6 +51,10 @@ const ModalContent = (props) => {
 
   const handleTodoChange = (e) => {
     setTodo(e.target.value);
+  };
+
+  const handleDateChange = (date) => {
+    setLimitDate(date);
   };
 
   const handleSubmit = () => {
@@ -126,6 +135,7 @@ const ModalContent = (props) => {
         user_id: userId,
         category_id: categoryId,
         todo: todo,
+        limit_date: limitDate ? dayjs(limitDate).format("YYYY/MM/DD") : null,
         is_completed: false,
       };
 
@@ -238,6 +248,18 @@ const ModalContent = (props) => {
               onChange={handleTodoChange}
               required
             ></TextField>
+            <LocalizationProvider
+              dateAdapter={AdapterDateFns}
+              adapterLocale={ja}
+            >
+              <DatePicker
+                label="期限"
+                name="limitDate"
+                value={limitDate}
+                onChange={handleDateChange}
+                renderInput={(params) => <TextField {...params} />}
+              />
+            </LocalizationProvider>
           </Box>
           <Box
             sx={{

@@ -12,6 +12,7 @@ import {
   Modal,
 } from "@mui/material";
 import { AddCircleOutline } from "@mui/icons-material";
+import dayjs from "dayjs";
 import { useState, useEffect, useContext } from "react";
 import Sidebar from "./Sidebar";
 import AuthContext from "../context/AuthContext";
@@ -142,7 +143,9 @@ const Body = () => {
                       <TableCell>{userTodo.category_name}</TableCell>
                       <TableCell>{userTodo.todo}</TableCell>
                       <TableCell>
-                        {userTodo.limit_date ? userTodo.limit_date : "期限なし"}
+                        {userTodo.limit_date
+                          ? dayjs(userTodo.limit_date).format("YYYY/MM/DD")
+                          : "期限なし"}
                       </TableCell>
                       <TableCell>
                         <Button
