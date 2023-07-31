@@ -1,15 +1,35 @@
-import { Box, Typography, Button, TextField } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Button,
+  FormControl,
+  TextField,
+  InputLabel,
+  Select,
+  MenuItem,
+} from "@mui/material";
 import { useState, useContext } from "react";
 import AuthContext from "../context/AuthContext";
 import axios from "axios";
 
 const ModalContent = (props) => {
-  const { isRegister, isLogin, title, onClose } = props;
+  const {
+    isRegister,
+    isLogin,
+    isCreate,
+    isUpdate,
+    title,
+    getUserTodo,
+    onClose,
+  } = props;
 
-  const { setUserId, setUserName, setIsLoggedIn } = useContext(AuthContext);
+  const { userId, setUserId, setUserName, categories, setIsLoggedIn } =
+    useContext(AuthContext);
 
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
+  const [category, setCategory] = useState("");
+  const [todo, setTodo] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleNameChange = (e) => {
@@ -20,8 +40,15 @@ const ModalContent = (props) => {
     setPassword(e.target.value);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleCategoryChange = (e) => {
+    setCategory(e.target.value);
+  };
+
+  const handleTodoChange = (e) => {
+    setTodo(e.target.value);
+  };
+
+  const handleSubmit = () => {
     // 新規登録の場合
     if (isRegister) {
       console.log("登録ボタンがクリックされました");
@@ -32,6 +59,12 @@ const ModalContent = (props) => {
     if (isLogin) {
       console.log("ログインボタンがクリックされました");
       postLogin();
+    }
+
+    // TODO作成の場合
+    if (isCreate) {
+      console.log("TODO作成ボタンがクリックされました");
+      postCreate();
     }
   };
 
@@ -81,56 +114,154 @@ const ModalContent = (props) => {
     return data;
   };
 
+  const postCreate = async () => {
+    try {
+      const selectedCategory = categories.find(
+        (item) => item.category === category
+      );
+      const categoryId = selectedCategory.id;
+
+      const url = "http://todo-app-api/api/todos/create";
+      const data = {
+        user_id: userId,
+        category_id: categoryId,
+        todo: todo,
+        is_completed: false,
+      };
+
+      console.log(data);
+
+      const response = await axios.post(url, data);
+
+      console.log(response);
+      onClose();
+      getUserTodo(userId);
+    } catch (error) {
+      console.log(error);
+      setErrorMessage("TODO作成に失敗しました");
+    }
+  };
+
   return (
     <>
-      <form onSubmit={handleSubmit}>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            p: 2,
-            gap: 2,
-          }}
-        >
-          <Box sx={{ borderBottom: "1px solid gray" }}>
-            <Typography variant="h4">{title}</Typography>
+      {isRegister || isLogin ? (
+        <FormControl fullWidth>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              p: 2,
+              gap: 2,
+            }}
+          >
+            <Box sx={{ borderBottom: "1px solid gray" }}>
+              <Typography variant="h4">{title}</Typography>
+            </Box>
+            <Typography variant="p" color="red">
+              {errorMessage}
+            </Typography>
+            <TextField
+              label="名前"
+              name="name"
+              value={name}
+              onChange={handleNameChange}
+              required
+            />
+            <TextField
+              label="パスワード"
+              name="password"
+              type="password"
+              value={password}
+              onChange={handlePasswordChange}
+              required
+            />
           </Box>
-          <Typography variant="p" color="red">
-            {errorMessage}
-          </Typography>
-          <TextField
-            label="名前"
-            name="name"
-            value={name}
-            onChange={handleNameChange}
-            required
-          />
-          <TextField
-            label="パスワード"
-            name="password"
-            type="password"
-            value={password}
-            onChange={handlePasswordChange}
-            required
-          />
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "flex-end",
-            p: 2,
-            gap: 2,
-          }}
-        >
-          <Button type="submit" variant="contained" color="primary">
-            {title}
-          </Button>
-          <Button onClick={onClose} variant="contained" mt={3}>
-            閉じる
-          </Button>
-        </Box>
-      </form>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "flex-end",
+              p: 2,
+              gap: 2,
+            }}
+          >
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              onClick={handleSubmit}
+            >
+              {title}
+            </Button>
+            <Button onClick={onClose} variant="contained" mt={3}>
+              閉じる
+            </Button>
+          </Box>
+        </FormControl>
+      ) : null}
+      {isCreate || isUpdate ? (
+        <FormControl fullWidth>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              p: 2,
+              gap: 2,
+            }}
+          >
+            <Box sx={{ borderBottom: "1px solid gray" }}>
+              <Typography variant="h4">{title}</Typography>
+            </Box>
+            <Typography variant="p" color="red">
+              {errorMessage}
+            </Typography>
+            <FormControl>
+              <InputLabel id="select-category-label">カテゴリ</InputLabel>
+              <Select
+                labelId="select-category-label"
+                id="select-category"
+                value={category}
+                label="カテゴリ"
+                onChange={handleCategoryChange}
+              >
+                {categories.map((item) => (
+                  <MenuItem key={item.id} value={item.category}>
+                    {item.category}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <TextField
+              label="TODO"
+              name="todo"
+              value={todo}
+              onChange={handleTodoChange}
+              required
+            ></TextField>
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "flex-end",
+              p: 2,
+              gap: 2,
+            }}
+          >
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              onClick={handleSubmit}
+            >
+              作成
+            </Button>
+            <Button onClick={onClose} variant="contained" mt={3}>
+              閉じる
+            </Button>
+          </Box>
+        </FormControl>
+      ) : null}
     </>
   );
 };

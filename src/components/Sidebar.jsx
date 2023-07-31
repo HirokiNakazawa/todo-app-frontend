@@ -2,6 +2,7 @@ import {
   Drawer,
   Toolbar,
   Box,
+  FormControl,
   List,
   ListItem,
   ListItemButton,
@@ -10,36 +11,28 @@ import {
   TextField,
   Button,
 } from "@mui/material";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useCallback } from "react";
 import AuthContext from "../context/AuthContext";
 import axios from "axios";
 
 const Sidebar = () => {
-  const { userId, isLoggedIn } = useContext(AuthContext);
+  const { userId, isLoggedIn, categories, setCategories } =
+    useContext(AuthContext);
 
   const [hasLoggedIn, setHasLoggedIn] = useState(false);
   const [category, setCategory] = useState("");
-  const [categories, setCategories] = useState([]);
 
   const drawerWidth = 300;
-
-  useEffect(() => {
-    if (isLoggedIn && !hasLoggedIn) {
-      getCategories(userId);
-      setHasLoggedIn(true);
-    }
-  }, [isLoggedIn, hasLoggedIn, userId]);
 
   const handleCategoryChange = (e) => {
     setCategory(e.target.value);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = () => {
     postCategory();
   };
 
-  const getCategories = async (userId) => {
+  const getCategories = useCallback(async () => {
     try {
       const url = "http://todo-app-api/api/categories/" + userId;
 
@@ -50,7 +43,7 @@ const Sidebar = () => {
     } catch (error) {
       console.log(error);
     }
-  };
+  }, [userId, setCategories]);
 
   const postCategory = async () => {
     try {
@@ -70,6 +63,13 @@ const Sidebar = () => {
     }
   };
 
+  useEffect(() => {
+    if (isLoggedIn && !hasLoggedIn) {
+      getCategories();
+      setHasLoggedIn(true);
+    }
+  }, [isLoggedIn, hasLoggedIn, getCategories]);
+
   return (
     <Drawer
       variant="permanent"
@@ -84,7 +84,7 @@ const Sidebar = () => {
         <List>
           {isLoggedIn ? (
             <div>
-              <form onSubmit={handleSubmit}>
+              <FormControl>
                 <Box
                   sx={{
                     display: "flex",
@@ -102,11 +102,16 @@ const Sidebar = () => {
                     onChange={handleCategoryChange}
                     required
                   />
-                  <Button type="submit" variant="contained" color="primary">
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    onClick={handleSubmit}
+                  >
                     追加
                   </Button>
                 </Box>
-              </form>
+              </FormControl>
               <ListItem>
                 <ListItemText primary="カテゴリ一覧" />
               </ListItem>
