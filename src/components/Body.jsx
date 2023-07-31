@@ -1,12 +1,16 @@
 import {
   Box,
+  Button,
   Toolbar,
-  Card,
-  CardContent,
-  List,
-  ListItem,
-  ListItemText,
+  TableContainer,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  Paper,
 } from "@mui/material";
+import { AddCircleOutline } from "@mui/icons-material";
 import { useState, useEffect, useContext } from "react";
 import Sidebar from "./Sidebar";
 import AuthContext from "../context/AuthContext";
@@ -66,42 +70,49 @@ const Body = () => {
         component="main"
       >
         <Toolbar />
-        <Typography>カテゴリ：</Typography>
-        {/* <Box>
         {isLoggedIn ? (
-          <div>
-          <form onSubmit={handleSubmit}></form>
-          </div>
-          ) : null}
-        </Box> */}
-        {isLoggedIn ? (
-          <Box sx={{ bgcolor: "background.paper" }}>
-            <List sx={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
-              <Toolbar />
-              {userTodos.map((userTodo) => (
-                <ListItem key={userTodo.id}>
-                  <Card sx={{ width: "80%" }}>
-                    <CardContent
-                      sx={{ display: "flex", justifyContent: "space-between" }}
-                    >
-                      <ListItemText variant="body2">
-                        {userTodo.category_name}
-                      </ListItemText>
-                      <ListItemText variant="body2">
-                        {userTodo.todo}
-                      </ListItemText>
-                      <ListItemText variant="body2">
-                        {userTodo.limit_date}
-                      </ListItemText>
-                      <ListItemText variant="body2">
-                        {userTodo.is_completed ? "完了" : "未完了"}
-                      </ListItemText>
-                    </CardContent>
-                  </Card>
-                </ListItem>
-              ))}
-            </List>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              p: 2,
+            }}
+          >
+            <Typography>カテゴリ：</Typography>
+            <Button variant="outlined" startIcon={<AddCircleOutline />}>
+              タスク追加
+            </Button>
           </Box>
+        ) : null}
+        {isLoggedIn ? (
+          <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+              <TableHead>
+                <TableRow>
+                  <TableCell>カテゴリ</TableCell>
+                  <TableCell>タスク名</TableCell>
+                  <TableCell>期限</TableCell>
+                  <TableCell>状態</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {userTodos.map((userTodo) => (
+                  <TableRow key={userTodo.id}>
+                    <TableCell>{userTodo.category_name}</TableCell>
+                    <TableCell>{userTodo.todo}</TableCell>
+                    <TableCell>
+                      {userTodo.limit_date ? userTodo.limit_date : "期限なし"}
+                    </TableCell>
+                    <TableCell>
+                      {userTodo.is_completed === 1 ? "完了" : "未完"}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
         ) : null}
       </Box>
     </>
