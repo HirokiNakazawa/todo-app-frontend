@@ -5,19 +5,27 @@ import {
   nameState,
   passwordState,
   errorMsgState,
+  categoryState,
+  todoState,
+  limitDateState,
 } from "../recoil/ModalState";
-import { loginState, userState } from "../recoil/UserState";
+import { categoriesState, loginState, userState } from "../recoil/UserState";
 import { useApi } from "../hooks/useApi";
+import dayjs from "dayjs";
 
 const ModalFooter = () => {
   // モーダルに関する状態変数
   const [modal, setModal] = useRecoilState(modalState);
   const name = useRecoilValue(nameState);
   const password = useRecoilValue(passwordState);
+  const category = useRecoilValue(categoryState);
+  const todo = useRecoilValue(todoState);
+  const limitDate = useRecoilValue(limitDateState);
   const setErrorMsg = useSetRecoilState(errorMsgState);
 
   // ユーザー情報に関する状態変数
-  const setUser = useSetRecoilState(userState);
+  const [user, setUser] = useRecoilState(userState);
+  const categories = useRecoilValue(categoriesState);
   const setIsLoggedIn = useSetRecoilState(loginState);
 
   // カスタムフック呼び出し
@@ -56,6 +64,28 @@ const ModalFooter = () => {
         setErrorMsg("ログインに失敗しました");
       }
     }
+
+    // TODO作成
+    if (modal.isCreate) {
+      console.log("TODO作成ボタンがクリックされました");
+      const selectedCategory = categories.find(
+        (item) => item.category === category
+      );
+      const data = {
+        user_id: user.id,
+        category_id: selectedCategory.id,
+        todo: todo,
+        limit_date: limitDate ? dayjs(limitDate).format("YYYY/MM/DD") : null,
+        is_completed: false,
+      };
+      try {
+        const response = await api.postTodo(data);
+        console.log(response);
+      } catch (error) {
+        console.log(error);
+        setErrorMsg("TODO作成に失敗しました");
+      }
+    }
   };
 
   // 認証が完了した後の処理
@@ -75,6 +105,8 @@ const ModalFooter = () => {
       isOpen: false,
       isRegister: false,
       isLogin: false,
+      isCreate: false,
+      isUpdate: false,
       title: "",
       buttonText: "",
     });

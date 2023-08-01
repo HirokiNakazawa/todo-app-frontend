@@ -13,7 +13,12 @@ export const loginState = atom({
   default: false,
 });
 
-export const categoryState = atom({
-  key: "categoryState",
+export const categoriesState = atom({
+  key: "categoriesState",
+  default: [],
+});
+
+export const todosState = atom({
+  key: "todosState",
   default: [],
 });

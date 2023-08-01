@@ -1,11 +1,13 @@
 import { FormControl, Box, Typography, TextField, Button } from "@mui/material";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { useState } from "react";
 import { userState } from "../recoil/UserState";
+import { addCategoryState } from "../recoil/PostState";
 import { useApi } from "../hooks/useApi";
 
-const AddCategoryForm = ({ onUpdate, drawerWidth }) => {
+const AddCategoryForm = ({ drawerWidth }) => {
   const user = useRecoilValue(userState);
+  const setAddCategory = useSetRecoilState(addCategoryState);
 
   const [category, setCategory] = useState("");
 
@@ -23,7 +25,7 @@ const AddCategoryForm = ({ onUpdate, drawerWidth }) => {
       };
       const response = await api.postCategory(data);
       console.log(response);
-      onUpdate();
+      setAddCategory(true);
       setCategory("");
     } catch (error) {
       console.log(error);

@@ -4,6 +4,7 @@ import { modalState } from "../recoil/ModalState";
 import ModalHeader from "./ModalHeader";
 import ModalFooter from "./ModalFooter";
 import ModalAuthContent from "./ModalAuthContent";
+import ModalTodoContent from "./ModalTodoContent";
 
 const CustomModal = () => {
   const modal = useRecoilValue(modalState);
@@ -32,6 +33,7 @@ const CustomModal = () => {
         >
           <ModalHeader />
           {modal.isRegister || modal.isLogin ? <ModalAuthContent /> : null}
+          {modal.isCreate || modal.isUpdate ? <ModalTodoContent /> : null}
         </Box>
         <ModalFooter />
       </Box>

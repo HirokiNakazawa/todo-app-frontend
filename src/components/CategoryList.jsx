@@ -1,9 +1,9 @@
 import { List, ListItem, ListItemText, ListItemButton } from "@mui/material";
 import { useRecoilValue } from "recoil";
-import { categoryState } from "../recoil/UserState";
+import { categoriesState } from "../recoil/UserState";
 
 const CategoryList = () => {
-  const categories = useRecoilValue(categoryState);
+  const categories = useRecoilValue(categoriesState);
 
   return (
     <List>
@@ -15,10 +15,10 @@ const CategoryList = () => {
           <ListItemText secondary="全て" />
         </ListItemButton>
       </ListItem>
-      {categories.map((category) => (
-        <ListItem key={category.id} disablePadding>
+      {categories.map((item) => (
+        <ListItem key={item.id} disablePadding>
           <ListItemButton>
-            <ListItemText secondary={category.category} />
+            <ListItemText secondary={item.category} />
           </ListItemButton>
         </ListItem>
       ))}

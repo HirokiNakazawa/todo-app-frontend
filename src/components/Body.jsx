@@ -1,34 +1,71 @@
 import {
   Box,
-  Button,
+  // Button,
   Toolbar,
-  Typography,
-  TableContainer,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-  Paper,
-  Modal,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
+  // Typography,
+  // TableContainer,
+  // Table,
+  // TableHead,
+  // TableRow,
+  // TableCell,
+  // TableBody,
+  // Paper,
+  // Modal,
+  // Dialog,
+  // DialogTitle,
+  // DialogContent,
+  // DialogContentText,
+  // DialogActions,
 } from "@mui/material";
-import { AddCircleOutline } from "@mui/icons-material";
-import dayjs from "dayjs";
-import { useRecoilValue } from "recoil";
-import { loginState, userState } from "../recoil/UserState";
-import { useState, useEffect, useContext } from "react";
+// import { AddCircleOutline } from "@mui/icons-material";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import {
+  categoriesState,
+  loginState,
+  todosState,
+  userState,
+} from "../recoil/UserState";
+import { addCategoryState, addTodoState } from "../recoil/PostState";
+import { useState, useEffect, useCallback } from "react";
+import { useApi } from "../hooks/useApi";
 import Sidebar from "./Sidebar";
-import AuthContext from "../context/AuthContext";
-import axios from "axios";
-import ModalContent from "./ModalContent";
+import AddTodoForm from "./AddTodoForm";
+import TodoTable from "./TodoTable";
 
 const Body = () => {
+  const user = useRecoilValue(userState);
   const isLoggedIn = useRecoilValue(loginState);
+  const setCategories = useSetRecoilState(categoriesState);
+  const [todos, setTodos] = useRecoilState(todosState);
+  const [addCategory, setAddCategory] = useRecoilState(addCategoryState);
+  const [addTodo, setAddTodo] = useRecoilState(addTodoState);
+
+  const [isMounted, setIsMounted] = useState(false);
+  const [inCompletedTodos, setInCompletedTodos] = useState({});
+  const [completedTodos, setCompletedTodos] = useState({});
+
+  const api = useApi();
+
+  const updateUserCategories = useCallback(async () => {
+    try {
+      const response = await api.getUserCategories(user.id);
+      console.log(response);
+      setCategories(response);
+    } catch (error) {
+      console.log(error);
+    }
+  }, [api, user.id, setCategories]);
+
+  const updateUserTodos = useCallback(async () => {
+    try {
+      const response = await api.getUserTodos(user.id);
+      console.log(response);
+      setTodos(response);
+    } catch (error) {
+      console.log(error);
+    }
+  }, [api, user.id, setTodos]);
+
   // const { userId, isLoggedIn } = useContext(AuthContext);
 
   // const [hasLoggedIn, setHasLoggedIn] = useState(false);
@@ -127,14 +164,34 @@ const Body = () => {
   //   }
   // };
 
-  // useEffect(() => {
-  //   setInCompletedTodos(
-  //     userTodos.filter((userTodo) => userTodo.is_completed === 0)
-  //   );
-  //   setCompletedTodos(
-  //     userTodos.filter((userTodo) => userTodo.is_completed === 1)
-  //   );
-  // }, [userTodos]);
+  useEffect(() => {
+    if (isLoggedIn && !isMounted) {
+      updateUserCategories();
+      updateUserTodos();
+      setIsMounted(true);
+    }
+  }, [isLoggedIn, isMounted, updateUserCategories, updateUserTodos]);
+
+  useEffect(() => {
+    if (addCategory) {
+      updateUserCategories();
+      setAddCategory(false);
+    }
+  }, [addCategory, updateUserCategories, setAddCategory]);
+
+  useEffect(() => {
+    if (addTodo) {
+      updateUserTodos();
+      setAddTodo(false);
+    }
+  }, [addTodo, updateUserTodos, setAddTodo]);
+
+  useEffect(() => {
+    setInCompletedTodos(
+      todos.filter((userTodo) => userTodo.is_completed === 0)
+    );
+    setCompletedTodos(todos.filter((userTodo) => userTodo.is_completed === 1));
+  }, [todos]);
 
   return (
     <>
@@ -146,7 +203,82 @@ const Body = () => {
             component="main"
           >
             <Toolbar />
-            <h1>ログイン状態:{isLoggedIn ? "ログイン済み" : "未ログイン"}</h1>
+            {/* <h1>ログイン状態:{isLoggedIn ? "ログイン済み" : "未ログイン"}</h1> */}
+            <AddTodoForm />
+            <TodoTable
+              status="未完了"
+              todos={inCompletedTodos}
+              onUpdate={updateUserTodos}
+            />
+            <TodoTable
+              status="完了"
+              todos={completedTodos}
+              onUpdate={updateUserTodos}
+            />
+            {/* <Box sx={{ mt: 2 }}>
+              <Typography>・未完了</Typography>
+            </Box>
+            <TableContainer component={Paper}>
+              <Table
+                sx={{
+                  minWidth: 650,
+                }}
+              >
+                <TableHead>
+                  <TableRow>
+                    <TableCell align="center">カテゴリ</TableCell>
+                    <TableCell align="center">タスク名</TableCell>
+                    <TableCell align="center">期限</TableCell>
+                    <TableCell align="center">状態</TableCell>
+                    <TableCell></TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {inCompletedTodos.map((userTodo) => (
+                    <TableRow key={userTodo.id}>
+                      <TableCell align="center">
+                        {userTodo.category_name}
+                      </TableCell>
+                      <TableCell>{userTodo.todo}</TableCell>
+                      <TableCell align="center">
+                        {userTodo.limit_date
+                          ? dayjs(userTodo.limit_date).format("YYYY/MM/DD")
+                          : "期限なし"}
+                      </TableCell>
+                      <TableCell align="center">
+                        <Button
+                          variant="outlined"
+                          onClick={() => updateTodoStatus(userTodo)}
+                          color={
+                            userTodo.is_completed === 1 ? "success" : "primary"
+                          }
+                        >
+                          {userTodo.is_completed === 1 ? "完了" : "未完"}
+                        </Button>
+                      </TableCell>
+                      <TableCell>
+                        <Box sx={{ display: "flex", gap: 2 }}>
+                          <Button
+                            variant="outlined"
+                            color="info"
+                            onClick={() => handleOpenUpdateModal(userTodo)}
+                          >
+                            編集
+                          </Button>
+                          <Button
+                            variant="outlined"
+                            color="error"
+                            onClick={() => handleOpenDeleteDialog(userTodo)}
+                          >
+                            削除
+                          </Button>
+                        </Box>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer> */}
           </Box>
         </>
       ) : null}
