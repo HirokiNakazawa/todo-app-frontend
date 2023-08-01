@@ -24,7 +24,7 @@ const ModalContent = (props) => {
     isUpdate,
     title,
     todos,
-    getUserTodo,
+    getUserTodos,
     onClose,
   } = props;
 
@@ -152,7 +152,7 @@ const ModalContent = (props) => {
 
       console.log(response);
       onClose();
-      getUserTodo(userId);
+      getUserTodos(userId);
     } catch (error) {
       console.log(error);
       setErrorMessage("TODO作成に失敗しました");
@@ -179,7 +179,7 @@ const ModalContent = (props) => {
 
       console.log(response);
       onClose();
-      getUserTodo(userId);
+      getUserTodos(userId);
     } catch (error) {
       console.log(error);
     }

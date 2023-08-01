@@ -10,6 +10,11 @@ import {
   TableBody,
   Paper,
   Modal,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
 } from "@mui/material";
 import { AddCircleOutline } from "@mui/icons-material";
 import dayjs from "dayjs";
@@ -26,14 +31,18 @@ const Body = () => {
   const [hasLoggedIn, setHasLoggedIn] = useState(false);
   const [userTodos, setUserTodos] = useState([]);
   const [todos, setTodos] = useState({});
+  const [todoId, setTodoId] = useState("");
   const [isCreate, setIsCreate] = useState(false);
   const [isUpdate, setIsUpdate] = useState(false);
   const [title, setTitle] = useState("");
   const [isModal, setIsModal] = useState(false);
+  const [isDialog, setIsDialog] = useState(false);
+  const [completedTodos, setCompletedTodos] = useState({});
+  const [inCompletedTodos, setInCompletedTodos] = useState({});
 
   useEffect(() => {
     if (isLoggedIn && !hasLoggedIn) {
-      getUserTodo(userId);
+      getUserTodos(userId);
       setHasLoggedIn(false);
     }
   }, [isLoggedIn, hasLoggedIn, userId]);
@@ -61,7 +70,18 @@ const Body = () => {
     setIsUpdate(false);
   };
 
-  const getUserTodo = async (userId) => {
+  const handleOpenDeleteDialog = (userTodo) => {
+    console.log("タスク削除ボタンがクリックされました");
+    setTodoId(userTodo.id);
+    setIsDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    console.log("ダイアログを閉じます");
+    setIsDialog(false);
+  };
+
+  const getUserTodos = async (userId) => {
     try {
       const url = "http://todo-app-api/api/todos/" + userId;
 
@@ -84,11 +104,34 @@ const Body = () => {
       const response = await axios.put(url, data);
       console.log(response.data);
 
-      getUserTodo(userId);
+      getUserTodos(userId);
     } catch (error) {
       console.log(error);
     }
   };
+
+  const deleteTodo = async () => {
+    try {
+      const url = "http://todo-app-api/api/todos/delete/" + todoId;
+
+      const response = await axios.delete(url);
+      console.log(response.date);
+
+      handleCloseDialog();
+      getUserTodos(userId);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    setInCompletedTodos(
+      userTodos.filter((userTodo) => userTodo.is_completed === 0)
+    );
+    setCompletedTodos(
+      userTodos.filter((userTodo) => userTodo.is_completed === 1)
+    );
+  }, [userTodos]);
 
   return (
     <>
@@ -118,6 +161,9 @@ const Body = () => {
                 タスク追加
               </Button>
             </Box>
+            <Box sx={{ mt: 2 }}>
+              <Typography>・未完了</Typography>
+            </Box>
             <TableContainer component={Paper}>
               <Table
                 sx={{
@@ -134,7 +180,7 @@ const Body = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {userTodos.map((userTodo) => (
+                  {inCompletedTodos.map((userTodo) => (
                     <TableRow key={userTodo.id}>
                       <TableCell align="center">
                         {userTodo.category_name}
@@ -165,7 +211,75 @@ const Body = () => {
                           >
                             編集
                           </Button>
-                          <Button variant="outlined" color="error">
+                          <Button
+                            variant="outlined"
+                            color="error"
+                            onClick={() => handleOpenDeleteDialog(userTodo)}
+                          >
+                            削除
+                          </Button>
+                        </Box>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <Box sx={{ mt: 5 }}>
+              <Typography>・完了</Typography>
+            </Box>
+            <TableContainer component={Paper}>
+              <Table
+                sx={{
+                  minWidth: 650,
+                }}
+              >
+                <TableHead>
+                  <TableRow>
+                    <TableCell align="center">カテゴリ</TableCell>
+                    <TableCell align="center">タスク名</TableCell>
+                    <TableCell align="center">期限</TableCell>
+                    <TableCell align="center">状態</TableCell>
+                    <TableCell></TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {completedTodos.map((userTodo) => (
+                    <TableRow key={userTodo.id}>
+                      <TableCell align="center">
+                        {userTodo.category_name}
+                      </TableCell>
+                      <TableCell>{userTodo.todo}</TableCell>
+                      <TableCell align="center">
+                        {userTodo.limit_date
+                          ? dayjs(userTodo.limit_date).format("YYYY/MM/DD")
+                          : "期限なし"}
+                      </TableCell>
+                      <TableCell align="center">
+                        <Button
+                          variant="outlined"
+                          onClick={() => updateTodoStatus(userTodo)}
+                          color={
+                            userTodo.is_completed === 1 ? "success" : "primary"
+                          }
+                        >
+                          {userTodo.is_completed === 1 ? "完了" : "未完"}
+                        </Button>
+                      </TableCell>
+                      <TableCell>
+                        <Box sx={{ display: "flex", gap: 2 }}>
+                          <Button
+                            variant="outlined"
+                            color="info"
+                            onClick={() => handleOpenUpdateModal(userTodo)}
+                          >
+                            編集
+                          </Button>
+                          <Button
+                            variant="outlined"
+                            color="error"
+                            onClick={() => handleOpenDeleteDialog(userTodo)}
+                          >
                             削除
                           </Button>
                         </Box>
@@ -193,11 +307,25 @@ const Body = () => {
                   isUpdate={isUpdate}
                   title={title}
                   todos={todos}
-                  getUserTodo={getUserTodo}
+                  getUserTodos={getUserTodos}
                   onClose={handleCloseModal}
                 />
               </Box>
             </Modal>
+            <Dialog open={isDialog} onClose={handleCloseDialog}>
+              <DialogTitle>確認</DialogTitle>
+              <DialogContent>
+                <DialogContentText>本当に削除しますか？</DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={handleCloseDialog} color="primary">
+                  キャンセル
+                </Button>
+                <Button onClick={deleteTodo} color="error">
+                  削除
+                </Button>
+              </DialogActions>
+            </Dialog>
           </Box>
         ) : null}
       </Box>
