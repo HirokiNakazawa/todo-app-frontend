@@ -6,7 +6,7 @@ import {
   passwordState,
   errorMsgState,
 } from "../recoil/ModalState";
-import { userState } from "../recoil/UserState";
+import { loginState, userState } from "../recoil/UserState";
 import { useApi } from "../hooks/useApi";
 
 const ModalFooter = () => {
@@ -18,6 +18,7 @@ const ModalFooter = () => {
 
   // ユーザー情報に関する状態変数
   const setUser = useSetRecoilState(userState);
+  const setIsLoggedIn = useSetRecoilState(loginState);
 
   // カスタムフック呼び出し
   const api = useApi();
@@ -31,12 +32,7 @@ const ModalFooter = () => {
       try {
         const response = await api.postRegister(data);
         console.log(response);
-        handleCloseModal();
-        setUser({
-          id: response.id,
-          name: response.name,
-          isLoggedIn: true,
-        });
+        handleAuthentication(response);
       } catch (error) {
         console.log(error);
         setErrorMsg("ユーザー登録に失敗しました");
@@ -50,12 +46,11 @@ const ModalFooter = () => {
       try {
         const response = await api.postLogin(data);
         console.log(response);
-        handleCloseModal();
         setUser({
           id: response.id,
           name: response.name,
-          isLoggedIn: true,
         });
+        handleAuthentication(response);
       } catch (error) {
         console.log(error);
         setErrorMsg("ログインに失敗しました");
@@ -63,6 +58,17 @@ const ModalFooter = () => {
     }
   };
 
+  // 認証が完了した後の処理
+  const handleAuthentication = (response) => {
+    setUser({
+      id: response.id,
+      name: response.name,
+    });
+    setIsLoggedIn(true);
+    handleCloseModal();
+  };
+
+  // モーダルを閉じる処理
   const handleCloseModal = () => {
     console.log("モーダルを閉じます");
     setModal({
