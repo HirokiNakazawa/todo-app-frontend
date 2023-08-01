@@ -25,6 +25,7 @@ const Body = () => {
 
   const [hasLoggedIn, setHasLoggedIn] = useState(false);
   const [userTodos, setUserTodos] = useState([]);
+  const [todos, setTodos] = useState({});
   const [isCreate, setIsCreate] = useState(false);
   const [isUpdate, setIsUpdate] = useState(false);
   const [title, setTitle] = useState("");
@@ -39,8 +40,17 @@ const Body = () => {
 
   const handleOpenCreateModal = () => {
     console.log("タスク追加ボタンをクリックしました");
-    setTitle("新規タスク");
+    setTitle("新規TODO");
     setIsCreate(true);
+    setIsModal(true);
+  };
+
+  const handleOpenUpdateModal = (userTodo) => {
+    console.log("タスク編集ボタンをクリックしました");
+    setTodos(userTodo);
+    console.log(userTodo);
+    setTitle("TODO編集");
+    setIsUpdate(true);
     setIsModal(true);
   };
 
@@ -50,11 +60,6 @@ const Body = () => {
     setIsCreate(false);
     setIsUpdate(false);
   };
-
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   postTodo();
-  // };
 
   const getUserTodo = async (userId) => {
     try {
@@ -85,20 +90,6 @@ const Body = () => {
     }
   };
 
-  // const postTodo = () => {
-  //   try {
-  //     const url = "http://todo-app-api/api/todos/create";
-  //     const data = {
-  //       user_id: 1,
-  //       category_id: 1,
-  //       todo: "過去の回収率をグラフ表示する",
-  //       is_completed: false,
-  //     };
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
   return (
     <>
       <Sidebar />
@@ -128,26 +119,33 @@ const Body = () => {
               </Button>
             </Box>
             <TableContainer component={Paper}>
-              <Table sx={{ minWidth: 650 }} aria-label="simple table">
+              <Table
+                sx={{
+                  minWidth: 650,
+                }}
+              >
                 <TableHead>
                   <TableRow>
-                    <TableCell>カテゴリ</TableCell>
-                    <TableCell>タスク名</TableCell>
-                    <TableCell>期限</TableCell>
-                    <TableCell>状態</TableCell>
+                    <TableCell align="center">カテゴリ</TableCell>
+                    <TableCell align="center">タスク名</TableCell>
+                    <TableCell align="center">期限</TableCell>
+                    <TableCell align="center">状態</TableCell>
+                    <TableCell></TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {userTodos.map((userTodo) => (
                     <TableRow key={userTodo.id}>
-                      <TableCell>{userTodo.category_name}</TableCell>
+                      <TableCell align="center">
+                        {userTodo.category_name}
+                      </TableCell>
                       <TableCell>{userTodo.todo}</TableCell>
-                      <TableCell>
+                      <TableCell align="center">
                         {userTodo.limit_date
                           ? dayjs(userTodo.limit_date).format("YYYY/MM/DD")
                           : "期限なし"}
                       </TableCell>
-                      <TableCell>
+                      <TableCell align="center">
                         <Button
                           variant="outlined"
                           onClick={() => updateTodoStatus(userTodo)}
@@ -157,6 +155,20 @@ const Body = () => {
                         >
                           {userTodo.is_completed === 1 ? "完了" : "未完"}
                         </Button>
+                      </TableCell>
+                      <TableCell>
+                        <Box sx={{ display: "flex", gap: 2 }}>
+                          <Button
+                            variant="outlined"
+                            color="info"
+                            onClick={() => handleOpenUpdateModal(userTodo)}
+                          >
+                            編集
+                          </Button>
+                          <Button variant="outlined" color="error">
+                            削除
+                          </Button>
+                        </Box>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -180,6 +192,7 @@ const Body = () => {
                   isCreate={isCreate}
                   isUpdate={isUpdate}
                   title={title}
+                  todos={todos}
                   getUserTodo={getUserTodo}
                   onClose={handleCloseModal}
                 />

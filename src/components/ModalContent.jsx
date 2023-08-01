@@ -12,7 +12,7 @@ import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { ja } from "date-fns/locale";
 import dayjs from "dayjs";
-import { useState, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import AuthContext from "../context/AuthContext";
 import axios from "axios";
 
@@ -23,6 +23,7 @@ const ModalContent = (props) => {
     isCreate,
     isUpdate,
     title,
+    todos,
     getUserTodo,
     onClose,
   } = props;
@@ -74,6 +75,12 @@ const ModalContent = (props) => {
     if (isCreate) {
       console.log("TODO作成ボタンがクリックされました");
       postCreate();
+    }
+
+    // TODO編集の場合
+    if (isUpdate) {
+      console.log("TODO更新ボタンがクリックされました");
+      updateTodo();
     }
   };
 
@@ -151,6 +158,40 @@ const ModalContent = (props) => {
       setErrorMessage("TODO作成に失敗しました");
     }
   };
+
+  const updateTodo = async () => {
+    try {
+      const todoId = todos.id;
+
+      const selectedCategory = categories.find(
+        (item) => item.category === category
+      );
+      const categoryId = selectedCategory.id;
+
+      const url = "http://todo-app-api/api/todos/update/" + todoId;
+      const data = {
+        category_id: categoryId,
+        todo: todo,
+        limit_date: limitDate ? dayjs(limitDate).format("YYYY/MM/DD") : null,
+      };
+
+      const response = await axios.put(url, data);
+
+      console.log(response);
+      onClose();
+      getUserTodo(userId);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (isUpdate && todos) {
+      setCategory(todos.category_name);
+      setTodo(todos.todo);
+      setLimitDate(todos.limit_date ? new Date(todos.limit_date) : null);
+    }
+  }, [isUpdate, todos]);
 
   return (
     <>
@@ -257,7 +298,7 @@ const ModalContent = (props) => {
                 name="limitDate"
                 value={limitDate}
                 onChange={handleDateChange}
-                renderInput={(params) => <TextField {...params} />}
+                slotProps={{ textField: { variant: "outlined" } }}
               />
             </LocalizationProvider>
           </Box>
@@ -276,7 +317,7 @@ const ModalContent = (props) => {
               color="primary"
               onClick={handleSubmit}
             >
-              作成
+              {isCreate ? "作成" : "更新"}
             </Button>
             <Button onClick={onClose} variant="contained" mt={3}>
               閉じる

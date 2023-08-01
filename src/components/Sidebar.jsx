@@ -92,6 +92,7 @@ const Sidebar = () => {
                     borderBottom: "1px solid gray",
                     p: 2,
                     gap: 2,
+                    width: drawerWidth,
                   }}
                 >
                   <Typography variant="p">カテゴリ追加</Typography>
