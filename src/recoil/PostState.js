@@ -20,7 +20,12 @@ export const updateStatusState = atom({
   default: false,
 });
 
-export const updateTodoStatus = atom({
+export const updateTodoState = atom({
   key: "updateTodoState",
+  default: false,
+});
+
+export const deleteTodoState = atom({
+  key: "deleteTodoState",
   default: false,
 });

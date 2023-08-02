@@ -14,7 +14,7 @@ import { categoriesState, loginState, userState } from "../recoil/UserState";
 import {
   addTodoState,
   postErrorMsgState,
-  updateTodoStatus,
+  updateTodoState,
 } from "../recoil/PostState";
 import { useApi } from "../hooks/useApi";
 import dayjs from "dayjs";
@@ -38,7 +38,7 @@ const ModalFooter = () => {
 
   // POSTリクエストに関する状態変数
   const setAddTodo = useSetRecoilState(addTodoState);
-  const setUpdateTodo = useSetRecoilState(updateTodoStatus);
+  const setUpdateTodo = useSetRecoilState(updateTodoState);
 
   // カスタムフック呼び出し
   const api = useApi();

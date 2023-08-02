@@ -94,6 +94,17 @@ const useApi = () => {
     }
   };
 
+  // TODO削除
+  const deleteTodo = async (id) => {
+    try {
+      const url = `${API_BASE_URL}/todos/delete/${id}`;
+      const response = await axios.delete(url);
+      return response.data;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  };
+
   return {
     postRegister,
     postLogin,
@@ -103,6 +114,7 @@ const useApi = () => {
     postTodo,
     updateTodoStatus,
     updateTodo,
+    deleteTodo,
   };
 };
 

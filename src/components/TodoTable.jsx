@@ -8,9 +8,9 @@ import {
   TableRow,
   TableCell,
   Paper,
-  Button,
 } from "@mui/material";
 import dayjs from "dayjs";
+import DeleteTodoButton from "./DeleteTodoButton";
 import UpdateStatusButton from "./UpdateStatusButton";
 import UpdateTodoButton from "./UpdateTodoButton";
 
@@ -52,20 +52,7 @@ const TodoTable = (props) => {
                 <TableCell>
                   <Box sx={{ display: "flex", gap: 2 }}>
                     <UpdateTodoButton todo={item} />
-                    {/* <Button
-                      variant="outlined"
-                      color="info"
-                      //   onClick={() => handleOpenUpdateModal(item)}
-                    >
-                      編集
-                    </Button> */}
-                    <Button
-                      variant="outlined"
-                      color="error"
-                      //   onClick={() => handleOpenDeleteDialog(item)}
-                    >
-                      削除
-                    </Button>
+                    <DeleteTodoButton todo={item} />
                   </Box>
                 </TableCell>
               </TableRow>
