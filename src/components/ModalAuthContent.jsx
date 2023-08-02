@@ -1,6 +1,6 @@
 import { Box, FormControl, TextField } from "@mui/material";
 import { useRecoilState } from "recoil";
-import { nameState, passwordState } from "../recoil/ModalState";
+import { nameState, passwordState } from "../recoil/AuthState";
 
 const ModalAuthContent = () => {
   const [name, setName] = useRecoilState(nameState);

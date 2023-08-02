@@ -1,11 +1,11 @@
 import { useCallback } from "react";
 import { useApi } from "./useApi";
 import { useSetRecoilState } from "recoil";
-import { categoriesState, todosState } from "../recoil/UserState";
+import { userCategoriesState, userTodosState } from "../recoil/UserState";
 
 const useUpdate = () => {
-  const setCategories = useSetRecoilState(categoriesState);
-  const setTodos = useSetRecoilState(todosState);
+  const seUserCategories = useSetRecoilState(userCategoriesState);
+  const setUserTodos = useSetRecoilState(userTodosState);
 
   const api = useApi();
 
@@ -15,26 +15,26 @@ const useUpdate = () => {
       try {
         const response = await api.getUserCategories(userId);
         console.log(response);
-        setCategories(response);
+        seUserCategories(response);
       } catch (error) {
         console.log(error);
       }
     },
-    [api, setCategories]
+    [api, seUserCategories]
   );
 
-  // ログインユーザーのうTODO一覧を更新
+  // ログインユーザーのTODO一覧を更新
   const updateTodos = useCallback(
     async (userId) => {
       try {
         const response = await api.getUserTodos(userId);
         console.log(response);
-        setTodos(response);
+        setUserTodos(response);
       } catch (error) {
         console.log(error);
       }
     },
-    [api, setTodos]
+    [api, setUserTodos]
   );
 
   return { updateCategories, updateTodos };

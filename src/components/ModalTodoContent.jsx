@@ -10,17 +10,21 @@ import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { ja } from "date-fns/locale";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { categoryState, limitDateState, todoState } from "../recoil/ModalState";
-import { categoriesState } from "../recoil/UserState";
+import {
+  mainCategoryState,
+  todoState,
+  limitDateState,
+} from "../recoil/MainState";
+import { userCategoriesState } from "../recoil/UserState";
 
 const ModalTodoContent = () => {
-  const categories = useRecoilValue(categoriesState);
-  const [category, setCategory] = useRecoilState(categoryState);
+  const userCategories = useRecoilValue(userCategoriesState);
+  const [mainCategory, setMainCategory] = useRecoilState(mainCategoryState);
   const [todo, setTodo] = useRecoilState(todoState);
   const [limitDate, setLimitDate] = useRecoilState(limitDateState);
 
   const handleCategoryChange = (e) => {
-    setCategory(e.target.value);
+    setMainCategory(e.target.value);
   };
 
   const handleTodoChange = (e) => {
@@ -46,11 +50,11 @@ const ModalTodoContent = () => {
           <Select
             labelId="select-category-label"
             id="select-category"
-            value={category}
+            value={mainCategory}
             label="カテゴリ"
             onChange={handleCategoryChange}
           >
-            {categories.map((item) => (
+            {userCategories.map((item) => (
               <MenuItem key={item.id} value={item.category}>
                 {item.category}
               </MenuItem>

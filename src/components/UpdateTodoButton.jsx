@@ -1,17 +1,17 @@
 import { Button } from "@mui/material";
 import { useSetRecoilState } from "recoil";
-import {
-  categoryState,
-  limitDateState,
-  modalState,
-  todoIdState,
-  todoState,
-} from "../recoil/ModalState";
+import { modalState } from "../recoil/ModalState";
 import dayjs from "dayjs";
+import {
+  mainCategoryState,
+  todoState,
+  limitDateState,
+  todoIdState,
+} from "../recoil/MainState";
 
 const UpdateTodoButton = ({ todo }) => {
   const setTodoId = useSetRecoilState(todoIdState);
-  const setCategory = useSetRecoilState(categoryState);
+  const setMainCategory = useSetRecoilState(mainCategoryState);
   const setTodo = useSetRecoilState(todoState);
   const setLimitDate = useSetRecoilState(limitDateState);
   const setModal = useSetRecoilState(modalState);
@@ -19,7 +19,7 @@ const UpdateTodoButton = ({ todo }) => {
   const handleOpenUpdateModal = () => {
     console.log("タスク編集ボタンをクリックしました");
     setTodoId(todo.id);
-    setCategory(todo.category_name);
+    setMainCategory(todo.category_name);
     setTodo(todo.todo);
     setLimitDate(todo.limit_date ? dayjs(todo.limit_date).toDate() : null);
 

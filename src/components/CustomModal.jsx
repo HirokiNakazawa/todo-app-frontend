@@ -1,28 +1,25 @@
 import { Box, Modal } from "@mui/material";
 import { useRecoilState, useSetRecoilState } from "recoil";
+import { modalState } from "../recoil/ModalState";
+import { nameState, passwordState } from "../recoil/AuthState";
+import { sidebarState } from "../recoil/SidebarState";
 import {
-  categoryState,
-  errorMsgState,
-  limitDateState,
-  modalState,
-  nameState,
-  passwordState,
+  mainCategoryState,
   todoState,
-} from "../recoil/ModalState";
+  limitDateState,
+} from "../recoil/MainState";
 import ModalHeader from "./ModalHeader";
 import ModalRegisterForm from "./ModalRegisterForm";
-import { postErrorMsgState } from "../recoil/PostState";
 import ModalLoginForm from "./ModalLoginForm";
 import ModalCreateForm from "./ModalCreateForm";
 import ModalUpdateForm from "./ModalUpdateForm";
 
 const CustomModal = () => {
   const [modal, setModal] = useRecoilState(modalState);
-  const setErrorMsg = useSetRecoilState(errorMsgState);
-  const setPostErrorMsg = useSetRecoilState(postErrorMsgState);
+  const setSidebar = useSetRecoilState(sidebarState);
   const setName = useSetRecoilState(nameState);
   const setPassword = useSetRecoilState(passwordState);
-  const setCategory = useSetRecoilState(categoryState);
+  const setMainCategory = useSetRecoilState(mainCategoryState);
   const setTodo = useSetRecoilState(todoState);
   const setLimitDate = useSetRecoilState(limitDateState);
 
@@ -36,12 +33,12 @@ const CustomModal = () => {
       isUpdate: false,
       title: "",
       buttonText: "",
+      errorMsg: "",
     });
-    setErrorMsg("");
-    setPostErrorMsg("");
+    setSidebar({ errorMsg: "" });
     setName("");
     setPassword("");
-    setCategory("");
+    setMainCategory("");
     setTodo("");
     setLimitDate(null);
   };

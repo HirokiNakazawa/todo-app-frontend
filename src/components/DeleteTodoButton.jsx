@@ -1,7 +1,7 @@
 import { Button } from "@mui/material";
 import { useState } from "react";
 import { useRecoilState } from "recoil";
-import { todoIdState } from "../recoil/ModalState";
+import { todoIdState } from "../recoil/MainState";
 import DeleteDialog from "./DeleteDialog";
 
 const DeleteTodoButton = ({ todo }) => {

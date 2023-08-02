@@ -5,21 +5,17 @@ export const userState = atom({
   default: {
     id: null,
     name: "",
+    isLoggedin: false,
   },
 });
 
-export const loginState = atom({
-  key: "loginState",
-  default: false,
-});
-
-export const categoriesState = atom({
-  key: "categoriesState",
+export const userCategoriesState = atom({
+  key: "userCategoriesState",
   default: [],
 });
 
-export const todosState = atom({
-  key: "todosState",
+export const userTodosState = atom({
+  key: "userTodosState",
   default: [],
 });
 

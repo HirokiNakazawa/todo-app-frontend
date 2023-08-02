@@ -1,17 +1,17 @@
 import { FormControl, Box, Typography, TextField, Button } from "@mui/material";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { postErrorMsgState } from "../recoil/PostState";
+import { sidebarCategoryState, sidebarState } from "../recoil/SidebarState";
 import { usePost } from "../hooks/usePost";
-import { categoryState } from "../recoil/ModalState";
 
 const AddCategoryForm = ({ drawerWidth }) => {
-  const [category, setCategory] = useRecoilState(categoryState);
-  const postErrorMsg = useRecoilValue(postErrorMsgState);
+  const [sidebarCategory, setSidebarCategory] =
+    useRecoilState(sidebarCategoryState);
+  const sidebar = useRecoilValue(sidebarState);
 
   const post = usePost();
 
   const handleCategoryChange = (e) => {
-    setCategory(e.target.value);
+    setSidebarCategory(e.target.value);
   };
 
   const handleSubmit = async () => {
@@ -33,12 +33,12 @@ const AddCategoryForm = ({ drawerWidth }) => {
       >
         <Typography variant="p">カテゴリ追加</Typography>
         <Typography variant="p" color="red">
-          {postErrorMsg}
+          {sidebar.errorMsg}
         </Typography>
         <TextField
           label="カテゴリ"
           name="カテゴリ"
-          value={category}
+          value={sidebarCategory}
           onChange={handleCategoryChange}
           required
         />

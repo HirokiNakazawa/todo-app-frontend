@@ -1,10 +1,9 @@
 import { Box, Typography } from "@mui/material";
 import { useRecoilValue } from "recoil";
-import { modalState, errorMsgState } from "../recoil/ModalState";
+import { modalState } from "../recoil/ModalState";
 
 const ModalHeader = () => {
   const modal = useRecoilValue(modalState);
-  const errorMessage = useRecoilValue(errorMsgState);
 
   return (
     <>
@@ -12,7 +11,7 @@ const ModalHeader = () => {
         <Typography variant="h4">{modal.title}</Typography>
       </Box>
       <Typography variant="p" color="red">
-        {errorMessage}
+        {modal.errorMsg}
       </Typography>
     </>
   );

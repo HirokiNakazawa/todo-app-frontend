@@ -6,27 +6,16 @@ import {
   DialogActions,
   Button,
 } from "@mui/material";
-import { useSetRecoilState } from "recoil";
-import { useApi } from "../hooks/useApi";
-import { deleteTodoState } from "../recoil/PostState";
+import { usePost } from "../hooks/usePost";
 
 const DeleteDialog = (props) => {
   const { id, isOpen, onClose } = props;
 
-  const setDeleteTodo = useSetRecoilState(deleteTodoState);
-
-  const api = useApi();
+  const post = usePost(onClose);
 
   const deleteTodo = async () => {
     console.log("TODO削除ボタンがクリックされました");
-    try {
-      const response = await api.deleteTodo(id);
-      console.log(response);
-      setDeleteTodo(true);
-      onClose();
-    } catch (error) {
-      console.log(error);
-    }
+    post.deleteTodo(id);
   };
 
   return (

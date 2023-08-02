@@ -1,5 +1,6 @@
 import axios from "axios";
 
+// APIのベースエンドポイント
 const API_BASE_URL = "http://todo-app-api/api";
 
 const useApi = () => {
@@ -69,7 +70,7 @@ const useApi = () => {
     }
   };
 
-  // 状態更新
+  // TODOの状態更新
   const updateTodoStatus = async (todo) => {
     try {
       const url = `${API_BASE_URL}/todos/update/${todo.id}`;
