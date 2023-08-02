@@ -1,12 +1,12 @@
 import { AppBar, Toolbar, Typography, Button } from "@mui/material";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { modalState } from "../recoil/ModalState";
 import { loginState, userState } from "../recoil/UserState";
 
 const Header = () => {
   const setModal = useSetRecoilState(modalState);
   const user = useRecoilValue(userState);
-  const isLoggedIn = useRecoilValue(loginState);
+  const [isLoggedIn, setIsLoggedIn] = useRecoilState(loginState);
 
   const handleOpenRegisterModal = () => {
     console.log("新規登録ボタンをクリックしました");
@@ -28,6 +28,11 @@ const Header = () => {
     });
   };
 
+  const handleLogout = () => {
+    console.log("ログアウトボタンをクリックしました");
+    setIsLoggedIn(false);
+  };
+
   return (
     <>
       <AppBar
@@ -40,7 +45,12 @@ const Header = () => {
           </Typography>
 
           {isLoggedIn ? (
-            <Typography>{user.name}ログイン中</Typography>
+            <>
+              <Typography>{user.name}ログイン中</Typography>
+              <Button color="inherit" onClick={handleLogout}>
+                ログアウト
+              </Button>
+            </>
           ) : (
             <div>
               <Button color="inherit" onClick={handleOpenRegisterModal}>

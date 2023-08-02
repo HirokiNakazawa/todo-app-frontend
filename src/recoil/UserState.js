@@ -22,3 +22,11 @@ export const todosState = atom({
   key: "todosState",
   default: [],
 });
+
+export const currentCategoryState = atom({
+  key: "currentCategoryState",
+  default: {
+    id: null,
+    name: "全て",
+  },
+});

@@ -1,7 +1,8 @@
-import { Box, Toolbar } from "@mui/material";
+import { Box, Toolbar, Typography } from "@mui/material";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import {
   categoriesState,
+  currentCategoryState,
   loginState,
   todosState,
   userState,
@@ -24,6 +25,7 @@ const Body = () => {
   const user = useRecoilValue(userState);
   const isLoggedIn = useRecoilValue(loginState);
   const setCategories = useSetRecoilState(categoriesState);
+  const currentCategory = useRecoilValue(currentCategoryState);
   const [todos, setTodos] = useRecoilState(todosState);
   const [addCategory, setAddCategory] = useRecoilState(addCategoryState);
   const [addTodo, setAddTodo] = useRecoilState(addTodoState);
@@ -110,7 +112,18 @@ const Body = () => {
             component="main"
           >
             <Toolbar />
-            <AddTodoForm />
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                p: 2,
+              }}
+            >
+              <Typography>カテゴリ：{currentCategory.name}</Typography>
+              <AddTodoForm />
+            </Box>
             <TodoTable status="未完了" todos={inCompletedTodos} />
             <TodoTable status="完了" todos={completedTodos} />
           </Box>

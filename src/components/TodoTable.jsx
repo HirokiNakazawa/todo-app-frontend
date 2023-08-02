@@ -10,12 +10,17 @@ import {
   Paper,
 } from "@mui/material";
 import dayjs from "dayjs";
+import { useRecoilValue } from "recoil";
+import { currentCategoryState } from "../recoil/UserState";
 import DeleteTodoButton from "./DeleteTodoButton";
 import UpdateStatusButton from "./UpdateStatusButton";
 import UpdateTodoButton from "./UpdateTodoButton";
 
 const TodoTable = (props) => {
   const { status, todos } = props;
+
+  const currentCategory = useRecoilValue(currentCategoryState);
+
   return (
     <>
       <Box sx={{ mt: 2 }}>
@@ -37,26 +42,29 @@ const TodoTable = (props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {todos.map((item) => (
-              <TableRow key={item.id}>
-                <TableCell align="center">{item.category_name}</TableCell>
-                <TableCell>{item.todo}</TableCell>
-                <TableCell align="center">
-                  {item.limit_date
-                    ? dayjs(item.limit_date).format("YYYY/MM/DD")
-                    : "期限なし"}
-                </TableCell>
-                <TableCell align="center">
-                  <UpdateStatusButton todo={item} />
-                </TableCell>
-                <TableCell>
-                  <Box sx={{ display: "flex", gap: 2 }}>
-                    <UpdateTodoButton todo={item} />
-                    <DeleteTodoButton todo={item} />
-                  </Box>
-                </TableCell>
-              </TableRow>
-            ))}
+            {todos.map((item) =>
+              currentCategory.id === null ||
+              item.category_id === currentCategory.id ? (
+                <TableRow key={item.id}>
+                  <TableCell align="center">{item.category_name}</TableCell>
+                  <TableCell>{item.todo}</TableCell>
+                  <TableCell align="center">
+                    {item.limit_date
+                      ? dayjs(item.limit_date).format("YYYY/MM/DD")
+                      : "期限なし"}
+                  </TableCell>
+                  <TableCell align="center">
+                    <UpdateStatusButton todo={item} />
+                  </TableCell>
+                  <TableCell>
+                    <Box sx={{ display: "flex", gap: 2 }}>
+                      <UpdateTodoButton todo={item} />
+                      <DeleteTodoButton todo={item} />
+                    </Box>
+                  </TableCell>
+                </TableRow>
+              ) : null
+            )}
           </TableBody>
         </Table>
       </TableContainer>

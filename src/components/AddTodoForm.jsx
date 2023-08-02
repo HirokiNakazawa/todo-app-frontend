@@ -1,4 +1,4 @@
-import { Box, Typography, Button } from "@mui/material";
+import { Button } from "@mui/material";
 import { AddCircleOutline } from "@mui/icons-material";
 import { useSetRecoilState } from "recoil";
 import { modalState } from "../recoil/ModalState";
@@ -17,26 +17,13 @@ const AddTodoForm = () => {
   };
 
   return (
-    <>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          p: 2,
-        }}
-      >
-        <Typography>カテゴリ：</Typography>
-        <Button
-          variant="outlined"
-          startIcon={<AddCircleOutline />}
-          onClick={handleOpenCreateModal}
-        >
-          タスク追加
-        </Button>
-      </Box>
-    </>
+    <Button
+      variant="outlined"
+      startIcon={<AddCircleOutline />}
+      onClick={handleOpenCreateModal}
+    >
+      タスク追加
+    </Button>
   );
 };
 
