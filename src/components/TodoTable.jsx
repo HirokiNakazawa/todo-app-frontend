@@ -9,17 +9,10 @@ import {
   TableCell,
   Paper,
 } from "@mui/material";
-import dayjs from "dayjs";
-import { useRecoilValue } from "recoil";
-import { currentCategoryState } from "../recoil/UserState";
-import DeleteTodoButton from "./DeleteTodoButton";
-import UpdateStatusButton from "./UpdateStatusButton";
-import UpdateTodoButton from "./UpdateTodoButton";
+import TodoTableRow from "./TodoTableRow";
 
 const TodoTable = (props) => {
   const { status, todos } = props;
-
-  const currentCategory = useRecoilValue(currentCategoryState);
 
   return (
     <>
@@ -35,36 +28,16 @@ const TodoTable = (props) => {
           <TableHead>
             <TableRow>
               <TableCell align="center">カテゴリ</TableCell>
-              <TableCell align="center">タスク名</TableCell>
+              <TableCell align="center" width={400}>
+                タスク名
+              </TableCell>
               <TableCell align="center">期限</TableCell>
               <TableCell align="center">状態</TableCell>
               <TableCell></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {todos.map((item) =>
-              currentCategory.id === null ||
-              item.category_id === currentCategory.id ? (
-                <TableRow key={item.id}>
-                  <TableCell align="center">{item.category_name}</TableCell>
-                  <TableCell>{item.todo}</TableCell>
-                  <TableCell align="center">
-                    {item.limit_date
-                      ? dayjs(item.limit_date).format("YYYY/MM/DD")
-                      : "期限なし"}
-                  </TableCell>
-                  <TableCell align="center">
-                    <UpdateStatusButton todo={item} />
-                  </TableCell>
-                  <TableCell>
-                    <Box sx={{ display: "flex", gap: 2 }}>
-                      <UpdateTodoButton todo={item} />
-                      <DeleteTodoButton todo={item} />
-                    </Box>
-                  </TableCell>
-                </TableRow>
-              ) : null
-            )}
+            <TodoTableRow todos={todos} />
           </TableBody>
         </Table>
       </TableContainer>

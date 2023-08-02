@@ -1,21 +1,12 @@
 import { Button } from "@mui/material";
-import { useSetRecoilState } from "recoil";
-import { useApi } from "../hooks/useApi";
-import { updateStatusState } from "../recoil/PostState";
+import { usePost } from "../hooks/usePost";
 
 const UpdateStatusButton = ({ todo }) => {
-  const setUpdateStatus = useSetRecoilState(updateStatusState);
-  const api = useApi();
+  const post = usePost();
 
   const updateTodoStatus = async (todo) => {
     console.log("ステータスボタンがクリックされました");
-    try {
-      const response = await api.updateTodoStatus(todo);
-      console.log(response);
-      setUpdateStatus(true);
-    } catch (error) {
-      console.log(error);
-    }
+    await post.updateStatus(todo);
   };
 
   return (

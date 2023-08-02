@@ -1,98 +1,99 @@
-import { Box, Toolbar, Typography } from "@mui/material";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
 import {
-  categoriesState,
-  currentCategoryState,
+  // categoriesState,
+  // currentCategoryState,
   loginState,
   todosState,
   userState,
 } from "../recoil/UserState";
-import {
-  addCategoryState,
-  addTodoState,
-  deleteTodoState,
-  updateStatusState,
-  updateTodoState,
-} from "../recoil/PostState";
-import { useState, useEffect, useCallback } from "react";
-import { useApi } from "../hooks/useApi";
+// import {
+//   addCategoryState,
+//   addTodoState,
+//   deleteTodoState,
+//   updateStatusState,
+//   updateTodoState,
+// } from "../recoil/PostState";
+import { useState, useEffect } from "react";
+import { useUpdate } from "../hooks/useUpdate";
 import Sidebar from "./Sidebar";
-import AddTodoForm from "./AddTodoForm";
-import TodoTable from "./TodoTable";
 import CustomModal from "./CustomModal";
+import MainContent from "./MainContent";
 
 const Body = () => {
   const user = useRecoilValue(userState);
   const isLoggedIn = useRecoilValue(loginState);
-  const setCategories = useSetRecoilState(categoriesState);
-  const currentCategory = useRecoilValue(currentCategoryState);
-  const [todos, setTodos] = useRecoilState(todosState);
-  const [addCategory, setAddCategory] = useRecoilState(addCategoryState);
-  const [addTodo, setAddTodo] = useRecoilState(addTodoState);
-  const [updateStatus, setUpdateStatus] = useRecoilState(updateStatusState);
-  const [updateTodo, setUpdateTodo] = useRecoilState(updateTodoState);
-  const [deleteTodo, setDeleteTodo] = useRecoilState(deleteTodoState);
+  // const setCategories = useSetRecoilState(categoriesState);
+  // const currentCategory = useRecoilValue(currentCategoryState);
+  const todos = useRecoilValue(todosState);
+  // const [addCategory, setAddCategory] = useRecoilState(addCategoryState);
+  // const [addTodo, setAddTodo] = useRecoilState(addTodoState);
+  // const [updateStatus, setUpdateStatus] = useRecoilState(updateStatusState);
+  // const [updateTodo, setUpdateTodo] = useRecoilState(updateTodoState);
+  // const [deleteTodo, setDeleteTodo] = useRecoilState(deleteTodoState);
 
   const [isMounted, setIsMounted] = useState(false);
   const [inCompletedTodos, setInCompletedTodos] = useState({});
   const [completedTodos, setCompletedTodos] = useState({});
 
-  const api = useApi();
+  // const api = useApi();
+  const update = useUpdate();
 
-  const updateUserCategories = useCallback(async () => {
-    try {
-      const response = await api.getUserCategories(user.id);
-      console.log(response);
-      setCategories(response);
-    } catch (error) {
-      console.log(error);
-    }
-  }, [api, user.id, setCategories]);
+  // const updateUserCategories = useCallback(async () => {
+  //   try {
+  //     const response = await api.getUserCategories(user.id);
+  //     console.log(response);
+  //     setCategories(response);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }, [api, user.id, setCategories]);
 
-  const updateUserTodos = useCallback(async () => {
-    try {
-      const response = await api.getUserTodos(user.id);
-      console.log(response);
-      setTodos(response);
-    } catch (error) {
-      console.log(error);
-    }
-  }, [api, user.id, setTodos]);
+  // const updateUserTodos = useCallback(async () => {
+  //   try {
+  //     const response = await api.getUserTodos(user.id);
+  //     console.log(response);
+  //     setTodos(response);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }, [api, user.id, setTodos]);
 
   useEffect(() => {
     if (isLoggedIn && !isMounted) {
-      updateUserCategories();
-      updateUserTodos();
+      // updateUserCategories();
+      update.updateCategories(user.id);
+      // updateUserTodos();
+      update.updateTodos(user.id);
       setIsMounted(true);
     }
-  }, [isLoggedIn, isMounted, updateUserCategories, updateUserTodos]);
+  }, [isLoggedIn, isMounted, update, user.id]);
 
-  useEffect(() => {
-    if (addCategory) {
-      updateUserCategories();
-      setAddCategory(false);
-    }
-  }, [addCategory, updateUserCategories, setAddCategory]);
+  // useEffect(() => {
+  //   if (addCategory) {
+  //     updateUserCategories();
+  //     setAddCategory(false);
+  //   }
+  // }, [addCategory, updateUserCategories, setAddCategory]);
 
-  useEffect(() => {
-    if (addTodo || updateStatus || updateTodo || deleteTodo) {
-      updateUserTodos();
-      setAddTodo(false);
-      setUpdateStatus(false);
-      setUpdateTodo(false);
-      setDeleteTodo(false);
-    }
-  }, [
-    addTodo,
-    updateStatus,
-    updateTodo,
-    deleteTodo,
-    updateUserTodos,
-    setAddTodo,
-    setUpdateStatus,
-    setUpdateTodo,
-    setDeleteTodo,
-  ]);
+  // useEffect(() => {
+  //   if (addTodo || updateStatus || updateTodo || deleteTodo) {
+  //     updateUserTodos();
+  //     setAddTodo(false);
+  //     setUpdateStatus(false);
+  //     setUpdateTodo(false);
+  //     setDeleteTodo(false);
+  //   }
+  // }, [
+  //   addTodo,
+  //   updateStatus,
+  //   updateTodo,
+  //   deleteTodo,
+  //   updateUserTodos,
+  //   setAddTodo,
+  //   setUpdateStatus,
+  //   setUpdateTodo,
+  //   setDeleteTodo,
+  // ]);
 
   useEffect(() => {
     setInCompletedTodos(
@@ -107,26 +108,10 @@ const Body = () => {
       {isLoggedIn ? (
         <>
           <Sidebar />
-          <Box
-            sx={{ display: "flex", flexDirection: "column", flexGrow: 1, p: 2 }}
-            component="main"
-          >
-            <Toolbar />
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                p: 2,
-              }}
-            >
-              <Typography>カテゴリ：{currentCategory.name}</Typography>
-              <AddTodoForm />
-            </Box>
-            <TodoTable status="未完了" todos={inCompletedTodos} />
-            <TodoTable status="完了" todos={completedTodos} />
-          </Box>
+          <MainContent
+            inCompletedTodos={inCompletedTodos}
+            completedTodos={completedTodos}
+          />
         </>
       ) : null}
     </>

@@ -1,37 +1,22 @@
 import { FormControl, Box, Typography, TextField, Button } from "@mui/material";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
-import { useState } from "react";
-import { userState } from "../recoil/UserState";
-import { addCategoryState, postErrorMsgState } from "../recoil/PostState";
-import { useApi } from "../hooks/useApi";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { postErrorMsgState } from "../recoil/PostState";
+import { usePost } from "../hooks/usePost";
+import { categoryState } from "../recoil/ModalState";
 
 const AddCategoryForm = ({ drawerWidth }) => {
-  const user = useRecoilValue(userState);
-  const [postErrorMsg, setPostErrorMsg] = useRecoilState(postErrorMsgState);
-  const setAddCategory = useSetRecoilState(addCategoryState);
+  const [category, setCategory] = useRecoilState(categoryState);
+  const postErrorMsg = useRecoilValue(postErrorMsgState);
 
-  const [category, setCategory] = useState("");
-
-  const api = useApi();
+  const post = usePost();
 
   const handleCategoryChange = (e) => {
     setCategory(e.target.value);
   };
 
   const handleSubmit = async () => {
-    try {
-      const data = {
-        user_id: user.id,
-        category: category,
-      };
-      const response = await api.postCategory(data);
-      console.log(response);
-      setAddCategory(true);
-      setCategory("");
-    } catch (error) {
-      console.log(error);
-      setPostErrorMsg("カテゴリ追加に失敗しました");
-    }
+    console.log("カテゴリ追加ボタンをクリックしました");
+    await post.createCategory();
   };
 
   return (
