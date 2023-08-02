@@ -83,6 +83,17 @@ const useApi = () => {
     }
   };
 
+  // TODO更新
+  const updateTodo = async (data, id) => {
+    try {
+      const url = `${API_BASE_URL}/todos/update/${id}`;
+      const response = await axios.put(url, data);
+      return response.data;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  };
+
   return {
     postRegister,
     postLogin,
@@ -91,6 +102,7 @@ const useApi = () => {
     postCategory,
     postTodo,
     updateTodoStatus,
+    updateTodo,
   };
 };
 

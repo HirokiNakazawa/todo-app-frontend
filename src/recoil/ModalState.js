@@ -23,6 +23,11 @@ export const passwordState = atom({
   default: "",
 });
 
+export const todoIdState = atom({
+  key: "todoIdState",
+  default: null,
+});
+
 export const categoryState = atom({
   key: "categoryState",
   default: "",

@@ -1,12 +1,13 @@
 import { FormControl, Box, Typography, TextField, Button } from "@mui/material";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { useState } from "react";
 import { userState } from "../recoil/UserState";
-import { addCategoryState } from "../recoil/PostState";
+import { addCategoryState, postErrorMsgState } from "../recoil/PostState";
 import { useApi } from "../hooks/useApi";
 
 const AddCategoryForm = ({ drawerWidth }) => {
   const user = useRecoilValue(userState);
+  const [postErrorMsg, setPostErrorMsg] = useRecoilState(postErrorMsgState);
   const setAddCategory = useSetRecoilState(addCategoryState);
 
   const [category, setCategory] = useState("");
@@ -29,6 +30,7 @@ const AddCategoryForm = ({ drawerWidth }) => {
       setCategory("");
     } catch (error) {
       console.log(error);
+      setPostErrorMsg("カテゴリ追加に失敗しました");
     }
   };
 
@@ -45,6 +47,9 @@ const AddCategoryForm = ({ drawerWidth }) => {
         }}
       >
         <Typography variant="p">カテゴリ追加</Typography>
+        <Typography variant="p" color="red">
+          {postErrorMsg}
+        </Typography>
         <TextField
           label="カテゴリ"
           name="カテゴリ"

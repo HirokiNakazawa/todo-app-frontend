@@ -2,7 +2,6 @@ import { Box, Typography, Button } from "@mui/material";
 import { AddCircleOutline } from "@mui/icons-material";
 import { useSetRecoilState } from "recoil";
 import { modalState } from "../recoil/ModalState";
-import CustomModal from "./CustomModal";
 
 const AddTodoForm = () => {
   const setModal = useSetRecoilState(modalState);
@@ -37,7 +36,6 @@ const AddTodoForm = () => {
           タスク追加
         </Button>
       </Box>
-      <CustomModal />
     </>
   );
 };

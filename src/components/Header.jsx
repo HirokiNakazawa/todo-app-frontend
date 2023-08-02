@@ -2,7 +2,6 @@ import { AppBar, Toolbar, Typography, Button } from "@mui/material";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { modalState } from "../recoil/ModalState";
 import { loginState, userState } from "../recoil/UserState";
-import CustomModal from "./CustomModal";
 
 const Header = () => {
   const setModal = useSetRecoilState(modalState);
@@ -54,7 +53,6 @@ const Header = () => {
           )}
         </Toolbar>
       </AppBar>
-      <CustomModal />
     </>
   );
 };

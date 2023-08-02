@@ -1,8 +1,10 @@
 import { Button } from "@mui/material";
+import { useSetRecoilState } from "recoil";
 import { useApi } from "../hooks/useApi";
+import { updateStatusState } from "../recoil/PostState";
 
-const UpdateStatusButton = (props) => {
-  const { todo, onUpdate } = props;
+const UpdateStatusButton = ({ todo }) => {
+  const setUpdateStatus = useSetRecoilState(updateStatusState);
   const api = useApi();
 
   const updateTodoStatus = async (todo) => {
@@ -10,7 +12,7 @@ const UpdateStatusButton = (props) => {
     try {
       const response = await api.updateTodoStatus(todo);
       console.log(response);
-      onUpdate();
+      setUpdateStatus(true);
     } catch (error) {
       console.log(error);
     }

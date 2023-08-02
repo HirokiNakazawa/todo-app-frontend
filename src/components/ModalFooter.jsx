@@ -8,25 +8,37 @@ import {
   categoryState,
   todoState,
   limitDateState,
+  todoIdState,
 } from "../recoil/ModalState";
 import { categoriesState, loginState, userState } from "../recoil/UserState";
+import {
+  addTodoState,
+  postErrorMsgState,
+  updateTodoStatus,
+} from "../recoil/PostState";
 import { useApi } from "../hooks/useApi";
 import dayjs from "dayjs";
 
 const ModalFooter = () => {
   // モーダルに関する状態変数
   const [modal, setModal] = useRecoilState(modalState);
-  const name = useRecoilValue(nameState);
-  const password = useRecoilValue(passwordState);
-  const category = useRecoilValue(categoryState);
-  const todo = useRecoilValue(todoState);
-  const limitDate = useRecoilValue(limitDateState);
+  const [name, setName] = useRecoilState(nameState);
+  const [password, setPassword] = useRecoilState(passwordState);
+  const [todoId, setTodoId] = useRecoilState(todoIdState);
+  const [category, setCategory] = useRecoilState(categoryState);
+  const [todo, setTodo] = useRecoilState(todoState);
+  const [limitDate, setLimitDate] = useRecoilState(limitDateState);
   const setErrorMsg = useSetRecoilState(errorMsgState);
+  const setPostErrorMsg = useSetRecoilState(postErrorMsgState);
 
   // ユーザー情報に関する状態変数
   const [user, setUser] = useRecoilState(userState);
   const categories = useRecoilValue(categoriesState);
   const setIsLoggedIn = useSetRecoilState(loginState);
+
+  // POSTリクエストに関する状態変数
+  const setAddTodo = useSetRecoilState(addTodoState);
+  const setUpdateTodo = useSetRecoilState(updateTodoStatus);
 
   // カスタムフック呼び出し
   const api = useApi();
@@ -68,22 +80,46 @@ const ModalFooter = () => {
     // TODO作成
     if (modal.isCreate) {
       console.log("TODO作成ボタンがクリックされました");
-      const selectedCategory = categories.find(
-        (item) => item.category === category
-      );
-      const data = {
-        user_id: user.id,
-        category_id: selectedCategory.id,
-        todo: todo,
-        limit_date: limitDate ? dayjs(limitDate).format("YYYY/MM/DD") : null,
-        is_completed: false,
-      };
       try {
+        const selectedCategory = categories.find(
+          (item) => item.category === category
+        );
+        const data = {
+          user_id: user.id,
+          category_id: selectedCategory.id,
+          todo: todo,
+          limit_date: limitDate ? dayjs(limitDate).format("YYYY/MM/DD") : null,
+          is_completed: false,
+        };
         const response = await api.postTodo(data);
         console.log(response);
+        setAddTodo(true);
+        handleCloseModal();
       } catch (error) {
         console.log(error);
         setErrorMsg("TODO作成に失敗しました");
+      }
+    }
+
+    // TODO更新
+    if (modal.isUpdate) {
+      console.log("TODO編集ボタンがクリックされました");
+      try {
+        const selectedCategory = categories.find(
+          (item) => item.category === category
+        );
+        const data = {
+          category_id: selectedCategory.id,
+          todo: todo,
+          limit_date: limitDate ? dayjs(limitDate).format("YYYY/MM/DD") : null,
+        };
+        const response = await api.updateTodo(data, todoId);
+        console.log(response);
+        setUpdateTodo(true);
+        handleCloseModal();
+      } catch (error) {
+        console.log(error);
+        setErrorMsg("TODO編集に失敗しました");
       }
     }
   };
@@ -110,6 +146,14 @@ const ModalFooter = () => {
       title: "",
       buttonText: "",
     });
+    setErrorMsg("");
+    setPostErrorMsg("");
+    setName("");
+    setPassword("");
+    setTodoId("");
+    setCategory("");
+    setTodo("");
+    setLimitDate(null);
   };
 
   return (

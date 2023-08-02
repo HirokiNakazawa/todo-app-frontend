@@ -9,12 +9,12 @@ import {
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { ja } from "date-fns/locale";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { categoryState, limitDateState, todoState } from "../recoil/ModalState";
 import { categoriesState } from "../recoil/UserState";
 
 const ModalTodoContent = () => {
-  const [categories, setCategories] = useRecoilState(categoriesState);
+  const categories = useRecoilValue(categoriesState);
   const [category, setCategory] = useRecoilState(categoryState);
   const [todo, setTodo] = useRecoilState(todoState);
   const [limitDate, setLimitDate] = useRecoilState(limitDateState);

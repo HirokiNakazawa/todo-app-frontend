@@ -25,12 +25,18 @@ import {
   todosState,
   userState,
 } from "../recoil/UserState";
-import { addCategoryState, addTodoState } from "../recoil/PostState";
+import {
+  addCategoryState,
+  addTodoState,
+  updateStatusState,
+  updateTodoStatus,
+} from "../recoil/PostState";
 import { useState, useEffect, useCallback } from "react";
 import { useApi } from "../hooks/useApi";
 import Sidebar from "./Sidebar";
 import AddTodoForm from "./AddTodoForm";
 import TodoTable from "./TodoTable";
+import CustomModal from "./CustomModal";
 
 const Body = () => {
   const user = useRecoilValue(userState);
@@ -39,6 +45,8 @@ const Body = () => {
   const [todos, setTodos] = useRecoilState(todosState);
   const [addCategory, setAddCategory] = useRecoilState(addCategoryState);
   const [addTodo, setAddTodo] = useRecoilState(addTodoState);
+  const [updateStatus, setUpdateStatus] = useRecoilState(updateStatusState);
+  const [updateTodo, setUpdateTodo] = useRecoilState(updateTodoStatus);
 
   const [isMounted, setIsMounted] = useState(false);
   const [inCompletedTodos, setInCompletedTodos] = useState({});
@@ -180,11 +188,21 @@ const Body = () => {
   }, [addCategory, updateUserCategories, setAddCategory]);
 
   useEffect(() => {
-    if (addTodo) {
+    if (addTodo || updateStatus || updateTodo) {
       updateUserTodos();
       setAddTodo(false);
+      setUpdateStatus(false);
+      setUpdateTodo(false);
     }
-  }, [addTodo, updateUserTodos, setAddTodo]);
+  }, [
+    addTodo,
+    updateStatus,
+    updateTodo,
+    updateUserTodos,
+    setAddTodo,
+    setUpdateStatus,
+    setUpdateTodo,
+  ]);
 
   useEffect(() => {
     setInCompletedTodos(
@@ -195,6 +213,7 @@ const Body = () => {
 
   return (
     <>
+      <CustomModal />
       {isLoggedIn ? (
         <>
           <Sidebar />
@@ -208,12 +227,12 @@ const Body = () => {
             <TodoTable
               status="未完了"
               todos={inCompletedTodos}
-              onUpdate={updateUserTodos}
+              // onUpdate={updateUserTodos}
             />
             <TodoTable
               status="完了"
               todos={completedTodos}
-              onUpdate={updateUserTodos}
+              // onUpdate={updateUserTodos}
             />
             {/* <Box sx={{ mt: 2 }}>
               <Typography>・未完了</Typography>
