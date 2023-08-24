@@ -1,23 +1,11 @@
-import { FormControl, Box, Typography, TextField, Button } from "@mui/material";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { sidebarCategoryState, sidebarState } from "../recoil/SidebarState";
-import { usePost } from "../hooks/usePost";
+import { FormControl, Box, Typography } from "@mui/material";
+import { useRecoilValue } from "recoil";
+import { sidebarState } from "../recoil/SidebarState";
+import CategoryField from "./CategoryField";
+import AddCategoryButton from "./AddCategoryButton";
 
 const AddCategoryForm = ({ drawerWidth }) => {
-  const [sidebarCategory, setSidebarCategory] =
-    useRecoilState(sidebarCategoryState);
   const sidebar = useRecoilValue(sidebarState);
-
-  const post = usePost();
-
-  const handleCategoryChange = (e) => {
-    setSidebarCategory(e.target.value);
-  };
-
-  const handleSubmit = async () => {
-    console.log("カテゴリ追加ボタンをクリックしました");
-    await post.createCategory();
-  };
 
   return (
     <FormControl>
@@ -35,21 +23,8 @@ const AddCategoryForm = ({ drawerWidth }) => {
         <Typography variant="p" color="red">
           {sidebar.errorMsg}
         </Typography>
-        <TextField
-          label="カテゴリ"
-          name="カテゴリ"
-          value={sidebarCategory}
-          onChange={handleCategoryChange}
-          required
-        />
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          onClick={handleSubmit}
-        >
-          追加
-        </Button>
+        <CategoryField />
+        <AddCategoryButton />
       </Box>
     </FormControl>
   );
