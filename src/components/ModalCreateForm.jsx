@@ -2,8 +2,8 @@ import { usePost } from "../hooks/usePost";
 import ModalFooter from "./ModalFooter";
 import ModalTodoContent from "./ModalTodoContent";
 
-const ModalCreateForm = ({ onClose }) => {
-  const post = usePost(onClose);
+const ModalCreateForm = () => {
+  const post = usePost();
 
   const handleSubmit = async () => {
     console.log("TODO作成ボタンがクリックされました");
@@ -13,7 +13,7 @@ const ModalCreateForm = ({ onClose }) => {
   return (
     <>
       <ModalTodoContent />
-      <ModalFooter handleSubmit={handleSubmit} onClose={onClose} />
+      <ModalFooter handleSubmit={handleSubmit} />
     </>
   );
 };

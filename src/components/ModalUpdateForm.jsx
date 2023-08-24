@@ -2,8 +2,8 @@ import { usePost } from "../hooks/usePost";
 import ModalFooter from "./ModalFooter";
 import ModalTodoContent from "./ModalTodoContent";
 
-const ModalUpdateForm = ({ onClose }) => {
-  const post = usePost(onClose);
+const ModalUpdateForm = () => {
+  const post = usePost();
 
   const handleSubmit = async () => {
     console.log("TODO編集ボタンがクリックされました");
@@ -13,7 +13,7 @@ const ModalUpdateForm = ({ onClose }) => {
   return (
     <>
       <ModalTodoContent />
-      <ModalFooter handleSubmit={handleSubmit} onClose={onClose} />
+      <ModalFooter handleSubmit={handleSubmit} />
     </>
   );
 };

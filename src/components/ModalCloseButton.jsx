@@ -1,8 +1,15 @@
 import { Button } from "@mui/material";
+import { useCloseModal } from "../hooks/useCloseModal";
 
-const ModalCloseButton = ({ onClose }) => {
+const ModalCloseButton = () => {
+  const closeModal = useCloseModal();
+
+  const handleCloseModal = () => {
+    closeModal.closeModal();
+  };
+
   return (
-    <Button onClick={onClose} variant="contained" mt={3}>
+    <Button onClick={handleCloseModal} variant="contained" mt={3}>
       閉じる
     </Button>
   );

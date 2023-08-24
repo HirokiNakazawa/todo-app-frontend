@@ -11,8 +11,9 @@ import {
   todoIdState,
 } from "../recoil/MainState";
 import dayjs from "dayjs";
+import { useCloseModal } from "./useCloseModal";
 
-const usePost = (onClose) => {
+const usePost = () => {
   const [sidebarCategory, setSidebarCategory] =
     useRecoilState(sidebarCategoryState);
 
@@ -27,6 +28,7 @@ const usePost = (onClose) => {
   const userCategories = useRecoilValue(userCategoriesState);
 
   const api = useApi();
+  const closeModal = useCloseModal();
   const update = useUpdate();
 
   // カテゴリ新規作成
@@ -63,7 +65,7 @@ const usePost = (onClose) => {
       const response = await api.postTodo(data);
       console.log(response);
       update.updateTodos(user.id);
-      onClose();
+      closeModal.closeModal();
     } catch (error) {
       console.log(error);
       setModal({ errorMsg: "TODO作成に失敗しました" });
@@ -95,7 +97,7 @@ const usePost = (onClose) => {
       const response = await api.updateTodo(data, todoId);
       console.log(response);
       update.updateTodos(user.id);
-      onClose();
+      closeModal.closeModal();
     } catch (error) {
       console.log(error);
       setModal({ errorMsg: "TODO編集に失敗しました" });
@@ -108,7 +110,6 @@ const usePost = (onClose) => {
       const response = await api.deleteTodo(id);
       console.log(response);
       update.updateTodos(user.id);
-      onClose();
     } catch (error) {
       console.log(error);
     }

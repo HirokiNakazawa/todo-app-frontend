@@ -2,8 +2,8 @@ import { useAuthentication } from "../hooks/useAuthentication";
 import ModalAuthContent from "./ModalAuthContent";
 import ModalFooter from "./ModalFooter";
 
-const ModalLoginForm = ({ onClose }) => {
-  const authentication = useAuthentication(onClose);
+const ModalLoginForm = () => {
+  const authentication = useAuthentication();
 
   const handleSubmit = async () => {
     console.log("ログインボタンがクリックされました");
@@ -13,7 +13,7 @@ const ModalLoginForm = ({ onClose }) => {
   return (
     <>
       <ModalAuthContent />
-      <ModalFooter handleSubmit={handleSubmit} onClose={onClose} />
+      <ModalFooter handleSubmit={handleSubmit} />
     </>
   );
 };

@@ -4,14 +4,16 @@ import { modalState } from "../recoil/ModalState";
 import { userState } from "../recoil/UserState";
 import { useApi } from "./useApi";
 import { useUpdate } from "./useUpdate";
+import { useCloseModal } from "./useCloseModal";
 
-const useAuthentication = (onClose) => {
+const useAuthentication = () => {
   const name = useRecoilValue(nameState);
   const password = useRecoilValue(passwordState);
   const setModal = useSetRecoilState(modalState);
   const setUser = useSetRecoilState(userState);
 
   const api = useApi();
+  const closeModal = useCloseModal();
   const update = useUpdate();
 
   // ユーザー新規登録
@@ -21,7 +23,7 @@ const useAuthentication = (onClose) => {
       const response = await api.postRegister(data);
       console.log(response);
       await handleAuthentication(response);
-      onClose();
+      closeModal.closeModal();
     } catch (error) {
       console.log(error);
       setModal({ errorMsg: "ユーザー登録に失敗しました" });
@@ -35,7 +37,7 @@ const useAuthentication = (onClose) => {
       const response = await api.postLogin(data);
       console.log(response);
       await handleAuthentication(response);
-      onClose();
+      closeModal.closeModal();
     } catch (error) {
       console.log(error);
       setModal({ errorMsg: "ログインに失敗しました" });

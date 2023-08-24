@@ -1,13 +1,6 @@
 import { Box, Modal } from "@mui/material";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
 import { modalState } from "../recoil/ModalState";
-import { nameState, passwordState } from "../recoil/AuthState";
-import { sidebarState } from "../recoil/SidebarState";
-import {
-  mainCategoryState,
-  todoState,
-  limitDateState,
-} from "../recoil/MainState";
 import ModalHeader from "./ModalHeader";
 import ModalRegisterForm from "./ModalRegisterForm";
 import ModalLoginForm from "./ModalLoginForm";
@@ -15,33 +8,7 @@ import ModalCreateForm from "./ModalCreateForm";
 import ModalUpdateForm from "./ModalUpdateForm";
 
 const CustomModal = () => {
-  const [modal, setModal] = useRecoilState(modalState);
-  const setSidebar = useSetRecoilState(sidebarState);
-  const setName = useSetRecoilState(nameState);
-  const setPassword = useSetRecoilState(passwordState);
-  const setMainCategory = useSetRecoilState(mainCategoryState);
-  const setTodo = useSetRecoilState(todoState);
-  const setLimitDate = useSetRecoilState(limitDateState);
-
-  const handleCloseModal = () => {
-    console.log("モーダルを閉じます");
-    setModal({
-      isOpen: false,
-      isRegister: false,
-      isLogin: false,
-      isCreate: false,
-      isUpdate: false,
-      title: "",
-      buttonText: "",
-      errorMsg: "",
-    });
-    setSidebar({ errorMsg: "" });
-    setName("");
-    setPassword("");
-    setMainCategory("");
-    setTodo("");
-    setLimitDate(null);
-  };
+  const modal = useRecoilValue(modalState);
 
   return (
     <Modal open={modal.isOpen}>
@@ -67,16 +34,10 @@ const CustomModal = () => {
           }}
         >
           <ModalHeader />
-          {modal.isRegister ? (
-            <ModalRegisterForm onClose={handleCloseModal} />
-          ) : null}
-          {modal.isLogin ? <ModalLoginForm onClose={handleCloseModal} /> : null}
-          {modal.isCreate ? (
-            <ModalCreateForm onClose={handleCloseModal} />
-          ) : null}
-          {modal.isUpdate ? (
-            <ModalUpdateForm onClose={handleCloseModal} />
-          ) : null}
+          {modal.isRegister ? <ModalRegisterForm /> : null}
+          {modal.isLogin ? <ModalLoginForm /> : null}
+          {modal.isCreate ? <ModalCreateForm /> : null}
+          {modal.isUpdate ? <ModalUpdateForm /> : null}
         </Box>
       </Box>
     </Modal>

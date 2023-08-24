@@ -4,7 +4,7 @@ import { modalState } from "../recoil/ModalState";
 import ModalCloseButton from "./ModalCloseButton";
 
 const ModalFooter = (props) => {
-  const { handleSubmit, onClose } = props;
+  const { handleSubmit } = props;
   const modal = useRecoilValue(modalState);
 
   return (
@@ -25,7 +25,7 @@ const ModalFooter = (props) => {
       >
         {modal.buttonText}
       </Button>
-      <ModalCloseButton onClose={onClose} />
+      <ModalCloseButton />
     </Box>
   );
 };
