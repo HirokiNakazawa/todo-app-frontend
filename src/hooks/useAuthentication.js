@@ -3,6 +3,7 @@ import { nameState, passwordState } from "../recoil/AuthState";
 import { modalState } from "../recoil/ModalState";
 import { userState } from "../recoil/UserState";
 import { useApi } from "./useApi";
+import { useUpdate } from "./useUpdate";
 
 const useAuthentication = (onClose) => {
   const name = useRecoilValue(nameState);
@@ -11,6 +12,7 @@ const useAuthentication = (onClose) => {
   const setUser = useSetRecoilState(userState);
 
   const api = useApi();
+  const update = useUpdate();
 
   // ユーザー新規登録
   const register = async () => {
@@ -47,6 +49,8 @@ const useAuthentication = (onClose) => {
       name: response.name,
       isLoggedin: true,
     });
+    await update.updateCategories(response.id);
+    await update.updateTodos(response.id);
   };
 
   return { register, login };

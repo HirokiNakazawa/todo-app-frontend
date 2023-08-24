@@ -1,12 +1,25 @@
 import { Box, Toolbar, Typography } from "@mui/material";
 import { useRecoilValue } from "recoil";
-import { currentCategoryState } from "../recoil/UserState";
+import { currentCategoryState, userTodosState } from "../recoil/UserState";
 import AddTodoForm from "./AddTodoForm";
 import TodoTable from "./TodoTable";
+import { useState, useEffect } from "react";
 
-const MainContent = (props) => {
-  const { inCompletedTodos, completedTodos } = props;
+const MainContent = () => {
+  const userTodos = useRecoilValue(userTodosState);
   const currentCategory = useRecoilValue(currentCategoryState);
+
+  const [inCompletedTodos, setInCompletedTodos] = useState([]);
+  const [completedTodos, setCompletedTodos] = useState([]);
+
+  useEffect(() => {
+    setInCompletedTodos(
+      userTodos.filter((userTodo) => userTodo.is_completed === 0)
+    );
+    setCompletedTodos(
+      userTodos.filter((userTodo) => userTodo.is_completed === 1)
+    );
+  }, [userTodos]);
 
   return (
     <Box
